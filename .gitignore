@@ -50,3 +50,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# script kiem thu tam, khong thuoc ma nguon
+*.local.mjs
