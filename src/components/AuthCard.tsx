@@ -1,5 +1,26 @@
 import { IconCap } from "@/components/icons";
 
+/* ----------------------------------------------------------------------------
+ * CHỈNH TAY Ở ĐÂY - đổi mấy giá trị dưới rồi lưu là thấy ngay, không cần sửa
+ * chỗ nào khác. Phải ghi nguyên tên lớp Tailwind (ví dụ "max-w-3xl"), đừng ghép
+ * chuỗi, vì Tailwind quét theo chữ có sẵn trong file.
+ * ------------------------------------------------------------------------- */
+
+/** Bề ngang thẻ đăng nhập. Nhỏ dần: max-w-5xl > max-w-4xl > max-w-3xl > max-w-2xl */
+const CARD_WIDTH = "max-w-4xl";
+
+/** Chiều cao tối thiểu nửa trái, cũng là chiều cao ảnh. min-h-120 ~ 480px, min-h-140 ~ 560px */
+const PANEL_HEIGHT = "min-h-140";
+
+/** Cách ảnh lấp khung: bg-cover phủ kín và cắt bớt cạnh, bg-contain hiện trọn ảnh nhưng chừa viền */
+const IMAGE_FIT = "bg-cover";
+
+/** Vị trí ảnh khi bị cắt: bg-center, bg-top, bg-bottom, bg-left, bg-right */
+const IMAGE_POSITION = "bg-center";
+
+/** Độ đậm lớp phủ tối dưới chân ảnh, để chữ trắng đọc được. Nhạt dần: /85 > /70 > /50 */
+const SCRIM = "from-sage-900/85";
+
 export default function AuthCard({
   heading,
   sub,
@@ -12,19 +33,23 @@ export default function AuthCard({
   footer: React.ReactNode;
 }) {
   return (
-    <main className="grid min-h-dvh place-items-center bg-sand p-4 sm:p-8">
-      <div className="grid w-full max-w-5xl overflow-hidden rounded-[28px] border border-line bg-white shadow-[0_24px_60px_-30px_rgba(47,51,39,0.35)] md:grid-cols-2">
-        {/*
-         * Nửa trái tràn viền: ảnh phủ kín khung nên tỉ lệ ảnh nào cũng dùng được,
-         * chỉ khác mức cắt cạnh. Thay ảnh tại public/img/login.webp.
-         * Chưa có ảnh thì còn lại nền chuyển sắc, không vỡ bố cục.
-         */}
-        <section className="relative hidden min-h-[560px] bg-sage-100 md:block">
+    <main
+      // Nền trang: hoạ tiết nằm ở viền và chừa trống phần giữa, nên thẻ đăng
+      // nhập đặt chính giữa vừa khít khoảng trống đó. Màu nền giữ làm dự phòng
+      // khi ảnh chưa tải xong.
+      className="grid min-h-dvh place-items-center bg-sand bg-cover bg-center bg-no-repeat p-4 sm:p-8"
+      style={{ backgroundImage: "url('/img/login-bg.webp')" }}
+    >
+      <div
+        className={`grid w-full ${CARD_WIDTH} overflow-hidden rounded-[28px] border border-line bg-white shadow-[0_30px_70px_-35px_rgba(47,51,39,0.45)] md:grid-cols-2`}
+      >
+        {/* Nửa trái tràn viền. Thay ảnh tại public/img/login.webp, nên dùng ảnh dọc 9:16. */}
+        <section className={`relative hidden ${PANEL_HEIGHT} bg-sage-100 md:block`}>
           <div
-            className="absolute inset-0 bg-cover bg-center"
+            className={`absolute inset-0 ${IMAGE_FIT} ${IMAGE_POSITION} bg-no-repeat`}
             style={{ backgroundImage: "url('/img/login.webp')" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-sage-900/85 via-sage-900/30 to-sage-900/5" />
+          <div className={`absolute inset-0 bg-linear-to-t ${SCRIM} via-sage-900/30 to-sage-900/5`} />
           <div className="relative flex h-full flex-col justify-end p-10">
             <h2 className="text-[34px] font-bold leading-none tracking-tight text-white">Teachly</h2>
             <p className="mt-3 max-w-xs text-[15px] leading-relaxed text-white/85">

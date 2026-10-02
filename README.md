@@ -94,9 +94,20 @@ Nhờ vậy sửa hoặc đánh dấu đã dạy cho từng buổi không ảnh 
 
 ## Ảnh trang đăng nhập
 
-Ảnh nền nửa trái lấy từ `public/img/login.webp`, hiển thị tràn viền theo kiểu `cover`.
-Nên dùng ảnh dọc tỉ lệ 9:16: khung hiển thị cao hơn rộng, ảnh ngang 16:9 sẽ bị cắt chỉ còn khoảng một phần ba ở giữa.
-Nhớ nén ảnh trước khi thay, bản gốc PNG thường nặng trên 1MB trong khi WebP chỉ khoảng 50KB.
+Có hai ảnh, đặt trong `public/img`:
+
+| File | Vai trò | Tỉ lệ nên dùng |
+|---|---|---|
+| `login.webp` | Ảnh trong nửa trái của thẻ đăng nhập | dọc 9:16 |
+| `login-bg.webp` | Nền cả trang, phía sau thẻ | ngang 16:9, chừa trống phần giữa |
+
+Khung nửa trái cao hơn rộng, nên ảnh ngang 16:9 bỏ vào đó sẽ bị cắt chỉ còn khoảng một phần ba ở giữa.
+
+Muốn chỉnh kích thước thẻ hoặc cách ảnh lấp khung thì sửa mấy hằng số đặt ngay đầu `src/components/AuthCard.tsx`.
+Chúng được tách riêng kèm chú thích để không phải lần mò trong JSX.
+
+Khi thay ảnh nhớ nén lại: bản PNG gốc thường trên 1.5MB, chuyển sang WebP còn khoảng 50 đến 150KB.
+Nếu ảnh gốc hẹp hơn 2000px, hãy phóng gấp đôi bằng LANCZOS trước khi nén, nếu không trình duyệt phải tự kéo giãn và ảnh sẽ nhoè trên màn hình độ phân giải cao.
 
 ## Thư viện mẫu câu
 
