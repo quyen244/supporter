@@ -108,6 +108,15 @@ export function IconLink({ className }: P) {
   );
 }
 
+export function IconShield({ className }: P) {
+  return (
+    <svg {...base} className={className} width="20" height="20" aria-hidden>
+      <path d="M12 3.5 5 6v5.4c0 4 2.9 7.6 7 8.6 4.1-1 7-4.6 7-8.6V6z" />
+      <path d="m9.2 12 2 2 3.6-3.6" />
+    </svg>
+  );
+}
+
 export function IconCap({ className }: P) {
   return (
     <svg {...base} className={className} width="22" height="22" aria-hidden>

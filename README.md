@@ -4,6 +4,8 @@ Nhập nhận xét sau mỗi buổi dạy rồi xuất ra phiếu giống hệt 
 
 ## Chức năng
 
+- Nhiều giáo viên, mỗi người đăng nhập bằng email và chỉ thấy học viên của mình.
+- Vai trò quản trị: xem được học viên của mọi giáo viên, đổi quyền, khoá tài khoản.
 - Quản lý nhiều học viên, mỗi học viên một phiếu tích luỹ dần qua các buổi.
 - Thư viện mẫu câu cho 6 nhóm: Từ vựng, Nghe, Nói, Đọc, Viết, Thái độ.
   Mỗi câu có ô nhập số ngay trên câu, ví dụ "Đọc hiểu được khoảng __% bài đọc".
@@ -40,7 +42,24 @@ Bảng dữ liệu được tạo tự động ở lần chạy đầu, không c
 | Biến | Bắt buộc | Ý nghĩa |
 |---|---|---|
 | `DATABASE_URL` | có | Chuỗi kết nối PostgreSQL. |
-| `APP_PASSWORD` | nên có | Mật khẩu vào ứng dụng. Để trống thì ứng dụng mở tự do, chỉ dùng khi chạy thử trên máy. |
+| `BETTER_AUTH_SECRET` | có | Khoá ký phiên đăng nhập. Tạo bằng `openssl rand -base64 32`. |
+| `BETTER_AUTH_URL` | có | Địa chỉ gốc của ứng dụng, ví dụ `https://phieu.vercel.app`. |
+| `ADMIN_EMAILS` | nên có | Email được cấp quyền quản trị ngay khi đăng ký, cách nhau bởi dấu phẩy. |
+
+## Tài khoản và phân quyền
+
+Xác thực dùng [Better Auth](https://better-auth.com) chạy ngay trong database của dự án, không phụ thuộc dịch vụ ngoài.
+Neon Auth cũng chạy trên chính thư viện này, nên sau có muốn chuyển sang bản được Neon quản lý cũng không phải viết lại.
+
+Bảng `user`, `session`, `account`, `verification` do Better Auth tạo.
+Khi đổi cấu hình auth, chạy `npx @better-auth/cli migrate` để cập nhật.
+
+Mỗi học viên thuộc về một giáo viên qua cột `students.owner_id`.
+Mọi thao tác đọc và ghi đều đi qua hàm `ownedStudent()` trong `src/app/actions.ts`.
+Nếu thêm truy vấn mới, hãy dùng hàm đó thay vì tìm học viên bằng id trần, nếu không sẽ thủng phân quyền.
+
+Giáo viên đầu tiên có email nằm trong `ADMIN_EMAILS` sẽ thành quản trị viên.
+Quản trị viên không tự hạ quyền hoặc tự khoá được chính mình, tránh trường hợp không còn ai vào được trang quản trị.
 
 ## Đưa lên mạng (Vercel)
 
@@ -48,8 +67,8 @@ Bảng dữ liệu được tạo tự động ở lần chạy đầu, không c
 2. Vào Vercel, chọn Import Project và trỏ tới repo.
 3. Trong tab Storage của project, thêm một database Postgres (Neon có gói miễn phí).
    Vercel tự gắn `DATABASE_URL` vào project.
-4. Trong Settings > Environment Variables, thêm `APP_PASSWORD`.
-5. Deploy.
+4. Trong Settings > Environment Variables, thêm `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` và `ADMIN_EMAILS`.
+5. Deploy, sau đó chạy `npx @better-auth/cli migrate` một lần với `DATABASE_URL` trỏ tới database thật.
 
 Sau đó mở trang web trên điện thoại và thêm vào màn hình chính để dùng như một app.
 

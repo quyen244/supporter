@@ -9,9 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "better-auth": "^1.7.7",
     "html-to-image": "^1.11.13",
     "jspdf": "^4.2.1",
     "next": "16.3.8",
+    "pg": "^8.23.1",
     "postgres": "^3.4.9",
     "react": "19.2.8",
     "react-dom": "19.2.8"
@@ -19,6 +21,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

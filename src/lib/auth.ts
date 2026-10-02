@@ -1,26 +1,60 @@
-export const COOKIE = "phieu_auth";
+import { betterAuth } from "better-auth";
+import { admin } from "better-auth/plugins/admin";
+import { Pool } from "pg";
 
-/**
- * Token = SHA-256(mật khẩu + muối cố định). Mật khẩu không bao giờ rời server,
- * cookie chỉ mang giá trị dẫn xuất nên lộ cookie không lộ mật khẩu.
- * Dùng Web Crypto để chạy được cả ở middleware (edge runtime).
- */
-export async function tokenFor(password: string): Promise<string> {
-  const data = new TextEncoder().encode(`phieu-hoc-tap::${password}`);
-  const digest = await crypto.subtle.digest("SHA-256", data);
-  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
-}
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) throw new Error("DATABASE_URL chưa được cấu hình");
 
-export async function expectedToken(): Promise<string | null> {
-  const pw = process.env.APP_PASSWORD;
-  if (!pw) return null;
-  return tokenFor(pw);
-}
+const local = connectionString.includes("localhost") || connectionString.includes("127.0.0.1");
 
-/** So sánh thời gian cố định để tránh rò rỉ qua timing. */
-export function safeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
-}
+export const ROLE_TEACHER = "teacher";
+export const ROLE_ADMIN = "admin";
+
+export const auth = betterAuth({
+  database: new Pool({ connectionString, ssl: local ? false : { rejectUnauthorized: true } }),
+  baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
+  secret: process.env.BETTER_AUTH_SECRET,
+
+  emailAndPassword: {
+    enabled: true,
+    minPasswordLength: 8,
+    // Chưa có dịch vụ gửi mail nên bỏ qua bước xác minh email.
+    requireEmailVerification: false,
+  },
+
+  user: {
+    additionalFields: {
+      role: { type: "string", input: false },
+    },
+  },
+
+  plugins: [
+    admin({
+      defaultRole: ROLE_TEACHER,
+      adminRoles: [ROLE_ADMIN],
+    }),
+  ],
+
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          // Email trong ADMIN_EMAILS được cấp quyền quản trị ngay khi đăng ký.
+          const admins = (process.env.ADMIN_EMAILS ?? "")
+            .split(",")
+            .map((e) => e.trim().toLowerCase())
+            .filter(Boolean);
+          const role = admins.includes(user.email.toLowerCase()) ? ROLE_ADMIN : ROLE_TEACHER;
+          return { data: { ...user, role } };
+        },
+      },
+    },
+  },
+});
+
+export type SessionUser = {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+};

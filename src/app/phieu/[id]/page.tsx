@@ -3,12 +3,14 @@ import { notFound } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import ExportBar from "@/components/ExportBar";
 import Sheet from "@/components/Sheet";
+import { requireUser } from "@/lib/session";
 import { getStudent } from "@/app/actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function Phieu({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const user = await requireUser();
   const data = await getStudent(id);
   if (!data) notFound();
   const { student, lessons } = data;
@@ -27,6 +29,7 @@ export default async function Phieu({ params }: { params: Promise<{ id: string }
   return (
     <AppShell
       title="Phiếu học tập"
+      user={user}
       studentId={student.id}
       breadcrumb={
         <span className="flex items-center gap-2">

@@ -34,6 +34,9 @@ yarn-error.log*
 .env*
 !.env.example
 
+# ảnh kiểm thử, chỉ xem cục bộ
+/artifacts
+
 # vercel
 .vercel
 

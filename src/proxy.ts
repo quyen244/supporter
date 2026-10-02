@@ -1,20 +1,20 @@
+import { getSessionCookie } from "better-auth/cookies";
 import { NextResponse, type NextRequest } from "next/server";
-import { COOKIE, expectedToken, safeEqual } from "@/lib/auth";
 
-export async function proxy(req: NextRequest) {
-  const want = await expectedToken();
-  // Chưa đặt APP_PASSWORD thì mở khoá, để chạy thử cục bộ không vướng.
-  if (!want) return NextResponse.next();
-
-  const got = req.cookies.get(COOKIE)?.value;
-  if (got && safeEqual(got, want)) return NextResponse.next();
+/**
+ * Chỉ kiểm tra nhanh sự tồn tại của cookie phiên để chuyển hướng sớm.
+ * Việc xác thực thật và phân quyền nằm ở server component và server action,
+ * vì proxy chạy trên edge runtime nên không truy cập được database.
+ */
+export function proxy(req: NextRequest) {
+  if (getSessionCookie(req)) return NextResponse.next();
 
   const url = req.nextUrl.clone();
   url.pathname = "/dang-nhap";
-  url.searchParams.set("tiep", req.nextUrl.pathname);
+  url.search = `?tiep=${encodeURIComponent(req.nextUrl.pathname)}`;
   return NextResponse.redirect(url);
 }
 
 export const config = {
-  matcher: ["/((?!dang-nhap|api/dang-nhap|img/|_next/|favicon.ico).*)"],
+  matcher: ["/((?!dang-nhap|dang-ky|api/auth|img/|_next/|favicon.ico).*)"],
 };

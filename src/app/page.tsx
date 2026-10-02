@@ -2,6 +2,7 @@ import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import NewStudent from "@/components/NewStudent";
 import { IconChevron, IconSheet } from "@/components/icons";
+import { requireUser } from "@/lib/session";
 import { listStudents } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -12,12 +13,14 @@ function initials(name: string) {
 }
 
 export default async function Home() {
+  const user = await requireUser();
   const students = await listStudents();
   const totalLessons = students.reduce((s, x) => s + x.lesson_count, 0);
 
   return (
     <AppShell
       title="Học viên"
+      user={user}
       breadcrumb={`${students.length} học viên · ${totalLessons} buổi đã nhận xét`}
       actions={<NewStudent />}
     >
@@ -49,6 +52,11 @@ export default async function Home() {
                       {s.class_code || "chưa có mã lớp"}
                     </span>
                     <span>{s.lesson_count} buổi</span>
+                    {s.owner_id !== user.id && s.owner_name && (
+                      <span className="rounded-md bg-sage-100 px-1.5 py-0.5 font-medium text-sage-700">
+                        {s.owner_name}
+                      </span>
+                    )}
                   </span>
                 </span>
                 <IconChevron className="shrink-0 text-ink-faint transition group-hover:translate-x-0.5 group-hover:text-sage" />

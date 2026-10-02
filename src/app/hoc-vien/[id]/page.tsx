@@ -5,6 +5,7 @@ import LessonForm from "@/components/LessonForm";
 import LessonList from "@/components/LessonList";
 import StudentInfo from "@/components/StudentInfo";
 import { IconSheet } from "@/components/icons";
+import { requireUser } from "@/lib/session";
 import { getStudent } from "@/app/actions";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +24,7 @@ function Stat({ label, value, unit }: { label: string; value: string; unit?: str
 
 export default async function HocVien({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const user = await requireUser();
   const data = await getStudent(id);
   if (!data) notFound();
   const { student, lessons } = data;
@@ -32,6 +34,7 @@ export default async function HocVien({ params }: { params: Promise<{ id: string
   return (
     <AppShell
       title={student.name}
+      user={user}
       studentId={student.id}
       breadcrumb={
         <span className="flex items-center gap-2">

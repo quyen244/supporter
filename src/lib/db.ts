@@ -45,6 +45,11 @@ async function migrate() {
     )
   `;
   await sql`create index if not exists lessons_student_idx on lessons (student_id, position)`;
+
+  // Chủ sở hữu học viên. Để nullable vì bảng user do Better Auth tạo và có thể
+  // chưa tồn tại lúc chạy lần đầu; mọi bản ghi mới đều được gán owner.
+  await sql`alter table students add column if not exists owner_id text`;
+  await sql`create index if not exists students_owner_idx on students (owner_id)`;
 }
 
 export function ready() {
@@ -54,6 +59,7 @@ export function ready() {
 
 export type Student = {
   id: string;
+  owner_id: string | null;
   name: string;
   class_code: string;
   teacher_name: string;
