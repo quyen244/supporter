@@ -34,7 +34,8 @@ export default function StudentInfo({ student }: { student: Student }) {
               await updateStudent(fd);
               toast.ok("Đã lưu thông tin phiếu");
             }}
-            className="grid gap-4 sm:grid-cols-2"
+            // Một cột: khối này nằm ở cột phụ hẹp, chia đôi sẽ chật khó đọc.
+            className="grid gap-3.5"
           >
             <input type="hidden" name="id" value={student.id} />
             <div>
@@ -61,7 +62,7 @@ export default function StudentInfo({ student }: { student: Student }) {
               </label>
               <input id="sp" name="playlist_url" defaultValue={student.playlist_url} className="field" />
             </div>
-            <div className="sm:col-span-2">
+            <div>
               <button className="rounded-md bg-sage px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600">
                 Lưu thay đổi
               </button>

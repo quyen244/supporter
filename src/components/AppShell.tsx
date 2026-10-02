@@ -80,7 +80,21 @@ export default function AppShell({
   );
 
   return (
-    <div className="min-h-dvh">
+    <div className="relative min-h-dvh">
+      {/*
+       * Nền ứng dụng: hoạ tiết nằm ở viền ảnh nên chỉ lộ ra ở phần lề hai bên,
+       * vùng giữa đã trống sẵn để nội dung đọc được. Cố định khi cuộn và phủ
+       * một lớp kem mờ để chữ luôn đủ tương phản.
+       */}
+      <div
+        aria-hidden
+        // bg-fixed chỉ bật từ md trở lên: Safari trên iOS dựng nền cố định rất
+        // giật và đôi khi hiển thị sai tỉ lệ.
+        className="pointer-events-none fixed inset-0 -z-10 bg-cream bg-cover bg-center bg-no-repeat md:bg-fixed"
+        style={{ backgroundImage: "url('/img/app-bg.webp')" }}
+      />
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-cream/70" />
+
       {/* Máy tính: sidebar phẳng sát mép, phân tách bằng đường viền chứ không nổi lên */}
       <nav className="fixed inset-y-0 left-0 z-20 hidden w-16 flex-col items-center justify-between border-r border-line bg-white py-4 md:flex">
         <div className="flex w-full flex-col items-center gap-1">
@@ -121,8 +135,12 @@ export default function AppShell({
       </header>
 
       <div className="md:pl-16">
-        <div className="mx-auto w-full max-w-5xl px-4 pb-16 pt-4 sm:px-6 md:pt-8">
-          <header className="mb-6 flex flex-wrap items-start justify-between gap-4">
+        {/*
+         * Khung nội dung co giãn theo màn hình, chặn ở 1440px để dòng chữ không
+         * dài quá tầm mắt. Lề hai bên nới dần theo bề ngang màn.
+         */}
+        <div className="mx-auto w-full max-w-360 px-4 pb-16 pt-4 sm:px-6 lg:px-8 xl:px-10 md:pt-8">
+          <header className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-line pb-5">
             <div className="min-w-0">
               <h1 className="truncate text-2xl font-bold tracking-tight text-ink sm:text-[28px]">{title}</h1>
               {breadcrumb && <div className="mt-1 text-sm text-ink-soft">{breadcrumb}</div>}
