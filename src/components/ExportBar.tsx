@@ -25,6 +25,15 @@ async function renderPages(): Promise<string[]> {
   return out;
 }
 
+function dataUrlToBlob(dataUrl: string): Blob {
+  const [head, b64] = dataUrl.split(",");
+  const mime = head.match(/:(.*?);/)![1];
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new Blob([bytes], { type: mime });
+}
+
 function dataUrlToFile(dataUrl: string, name: string): File {
   const [head, b64] = dataUrl.split(",");
   const mime = head.match(/:(.*?);/)![1];
@@ -70,6 +79,27 @@ export default function ExportBar({
     run("copy", async () => {
       await navigator.clipboard.writeText(shareText);
       toast.ok("Đã sao chép link, dán vào Zalo là được");
+    });
+
+  /*
+   * Cách nhanh nhất trên máy tính: ảnh vào thẳng clipboard, sang Zalo bấm
+   * Ctrl+V là xong, không phải tải file rồi đi tìm rồi kéo thả.
+   * Chỉ chép trang đầu vì clipboard chỉ giữ được một ảnh.
+   */
+  const copyImage = () =>
+    run("copyimg", async () => {
+      const imgs = await renderPages();
+      const blob = dataUrlToBlob(imgs[0]);
+      if (typeof ClipboardItem === "undefined") {
+        toast.warn("Trình duyệt này không chép được ảnh. Dùng nút Tải ảnh nhé.");
+        return;
+      }
+      await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })]);
+      toast.ok(
+        imgs.length > 1
+          ? "Đã chép trang 1, sang Zalo bấm Ctrl+V"
+          : "Đã chép ảnh phiếu, sang Zalo bấm Ctrl+V"
+      );
     });
 
   const names = (n: number) => (i: number) =>
@@ -120,6 +150,15 @@ export default function ExportBar({
       <button onClick={share} disabled={!!busy} className={`touch-only ${primary}`}>
         <IconShare />
         {busy === "share" ? "Đang tạo ảnh…" : "Gửi qua Zalo"}
+      </button>
+      <button
+        onClick={copyImage}
+        disabled={!!busy}
+        title="Chép ảnh phiếu, sang Zalo bấm Ctrl+V"
+        className={`desktop-only ${primary}`}
+      >
+        <IconCopy />
+        {busy === "copyimg" ? "Đang tạo ảnh…" : "Chép ảnh để dán Zalo"}
       </button>
       <button onClick={savePng} disabled={!!busy} className={ghost}>
         <IconImage />

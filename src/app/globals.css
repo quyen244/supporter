@@ -62,6 +62,14 @@ body {
   }
 }
 
+/* Ngược lại: thao tác chỉ có nghĩa khi có bàn phím và chuột, ví dụ chép ảnh
+   vào clipboard rồi dán bằng Ctrl+V sang Zalo trên máy tính. */
+@media (pointer: coarse) {
+  .desktop-only {
+    display: none;
+  }
+}
+
 @utility card {
   background: #fff;
   border-radius: var(--radius-card);

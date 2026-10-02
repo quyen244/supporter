@@ -50,14 +50,25 @@ export default async function Phieu({ params }: { params: Promise<{ id: string }
         </div>
       </div>
 
-      <div className="mt-3 space-y-1.5 text-xs leading-relaxed text-ink-faint">
-        <p>
-          <span className="font-semibold text-ink-soft">Trên điện thoại:</span> bấm Gửi qua Zalo, chọn phụ huynh.
-          Ảnh kèm theo phần chữ chứa link để bấm được.
+      <div className="mt-4 rounded-card border border-line bg-white p-4 text-sm leading-relaxed">
+        <p className="mb-2 font-semibold text-ink">Cách gửi cho phụ huynh</p>
+        <ol className="desktop-only list-decimal space-y-1 pl-5 text-ink-soft">
+          <li>
+            Bấm <span className="font-medium text-ink">Chép ảnh để dán Zalo</span>, mở Zalo rồi bấm Ctrl+V vào
+            khung chat.
+          </li>
+          <li>
+            Bấm <span className="font-medium text-ink">Sao chép link</span>, dán thêm một lần nữa để phụ huynh
+            bấm được playlist và kết quả test.
+          </li>
+        </ol>
+        <p className="touch-only text-ink-soft">
+          Bấm <span className="font-medium text-ink">Gửi qua Zalo</span> rồi chọn phụ huynh. Nếu Zalo chỉ nhận
+          ảnh mà bỏ phần chữ, bấm thêm <span className="font-medium text-ink">Sao chép link</span> rồi dán vào
+          khung chat.
         </p>
-        <p>
-          <span className="font-semibold text-ink-soft">Trên máy tính:</span> Zalo Desktop không nhận chia sẻ
-          trực tiếp từ trình duyệt, nên hãy bấm Tải ảnh rồi kéo ảnh vào khung chat, kèm nút Sao chép link.
+        <p className="mt-2 text-xs text-ink-faint">
+          Link in trên ảnh chỉ là chữ nên không bấm được, vì vậy mới cần gửi kèm phần link riêng.
         </p>
       </div>
     </AppShell>
