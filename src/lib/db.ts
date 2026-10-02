@@ -5,20 +5,32 @@ declare global {
   var __migrated: Promise<void> | undefined;
 }
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) throw new Error("DATABASE_URL chưa được cấu hình");
+/*
+ * Không ném lỗi ngay lúc nạp module: Next vẫn import file này khi build, mà
+ * lúc build trên Vercel biến môi trường có thể chưa được gắn. Thiếu cấu hình
+ * sẽ báo ở ready() với thông điệp rõ ràng thay vì làm hỏng cả bản build.
+ */
+const connectionString = process.env.DATABASE_URL ?? "";
+const isLocal = connectionString.includes("localhost") || connectionString.includes("127.0.0.1");
 
 export const sql =
   global.__sql ??
   postgres(connectionString, {
-    max: 5,
+    // Chạy serverless nên mỗi instance sống ngắn; giữ pool nhỏ để không chạm
+    // trần kết nối của Neon. Nhớ dùng chuỗi kết nối có -pooler.
+    max: isLocal ? 5 : 3,
     idle_timeout: 20,
-    ssl: connectionString.includes("localhost") || connectionString.includes("127.0.0.1") ? false : "require",
+    ssl: isLocal ? false : "require",
   });
 
 if (process.env.NODE_ENV !== "production") global.__sql = sql;
 
 async function migrate() {
+  if (!connectionString) {
+    throw new Error(
+      "DATABASE_URL chưa được cấu hình. Trên Vercel vào Settings > Environment Variables để thêm."
+    );
+  }
   await sql`
     create table if not exists students (
       id           uuid primary key default gen_random_uuid(),

@@ -2,9 +2,9 @@ import { betterAuth } from "better-auth";
 import { admin } from "better-auth/plugins/admin";
 import { Pool } from "pg";
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) throw new Error("DATABASE_URL chưa được cấu hình");
-
+// Để trống thay vì ném lỗi: file này bị import lúc build, khi đó Vercel có thể
+// chưa gắn biến môi trường. Pool của pg chỉ thực sự kết nối khi có truy vấn.
+const connectionString = process.env.DATABASE_URL ?? "";
 const local = connectionString.includes("localhost") || connectionString.includes("127.0.0.1");
 
 export const ROLE_TEACHER = "teacher";
