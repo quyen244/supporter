@@ -100,9 +100,9 @@ export const SKILLS: Skill[] = [
 ];
 
 export const TONE_STYLE: Record<Tone, string> = {
-  good: "border-emerald-300 bg-emerald-50 text-emerald-900 hover:bg-emerald-100",
-  ok: "border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100",
-  work: "border-rose-300 bg-rose-50 text-rose-900 hover:bg-rose-100",
+  good: "border-sage-200 bg-ok-bg text-sage-700 hover:border-sage",
+  ok: "border-warn/30 bg-warn-bg text-warn hover:border-warn",
+  work: "border-alert/30 bg-alert-bg text-alert hover:border-alert",
 };
 
 /** Thay từng `{n}` bằng giá trị tương ứng trong `values`. */

@@ -15,7 +15,7 @@ function PhraseChip({ phrase, onAdd }: { phrase: Phrase; onAdd: (line: string) =
     <button
       type="button"
       onClick={() => onAdd(fillPhrase(phrase.text, values))}
-      className={`flex flex-wrap items-center gap-1 rounded-lg border px-2.5 py-1.5 text-left text-sm transition ${TONE_STYLE[phrase.tone]}`}
+      className={`flex flex-wrap items-center gap-1 rounded-xl border px-3 py-2 text-left text-sm transition ${TONE_STYLE[phrase.tone]}`}
     >
       {segments.map((seg, i) => (
         <span key={i} className="contents">
@@ -24,18 +24,19 @@ function PhraseChip({ phrase, onAdd }: { phrase: Phrase; onAdd: (line: string) =
             <input
               type="number"
               value={values[i]}
+              aria-label="Giá trị"
               onChange={(e) => {
                 const next = [...values];
                 next[i] = e.target.value;
                 setValues(next);
               }}
               onClick={(e) => e.stopPropagation()}
-              className="w-12 rounded border border-current/30 bg-white/90 px-1 py-0.5 text-center text-sm text-slate-900 outline-none focus:ring-2 focus:ring-sky-300"
+              className="w-12 rounded-lg border border-current/25 bg-white px-1 py-0.5 text-center text-sm font-semibold text-ink outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
             />
           )}
         </span>
       ))}
-      <span className="ml-1 font-bold opacity-50">+</span>
+      <span className="ml-0.5 text-base leading-none opacity-40">+</span>
     </button>
   );
 }
@@ -45,29 +46,31 @@ export default function CommentBuilder({ onAdd }: { onAdd: (line: string) => voi
   const skill = SKILLS.find((s) => s.id === active)!;
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+    <div className="rounded-2xl border border-line bg-cream p-3.5">
       <div className="mb-3 flex flex-wrap gap-1.5">
         {SKILLS.map((s) => (
           <button
             key={s.id}
             type="button"
             onClick={() => setActive(s.id)}
-            className={`rounded-full px-3 py-1 text-sm font-medium transition ${
-              s.id === active ? "bg-sky-600 text-white" : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-100"
+            className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
+              s.id === active
+                ? "bg-sage text-white"
+                : "bg-white text-ink-soft ring-1 ring-line hover:text-sage-700"
             }`}
           >
             {s.label}
           </button>
         ))}
       </div>
+
       <div className="flex flex-wrap gap-1.5">
         {skill.phrases.map((p) => (
           <PhraseChip key={p.id} phrase={p} onAdd={onAdd} />
         ))}
       </div>
-      <p className="mt-2 text-xs text-slate-500">
-        Sửa số trong ô rồi bấm vào câu để thêm vào nhận xét.
-      </p>
+
+      <p className="mt-2.5 text-xs text-ink-faint">Sửa số trong ô rồi bấm vào câu để thêm vào nhận xét.</p>
     </div>
   );
 }

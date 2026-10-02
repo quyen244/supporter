@@ -1,10 +1,25 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { archiveStudent, getStudent, updateStudent } from "@/app/actions";
+import AppShell from "@/components/AppShell";
 import LessonForm from "@/components/LessonForm";
 import LessonList from "@/components/LessonList";
+import StudentInfo from "@/components/StudentInfo";
+import { IconSheet } from "@/components/icons";
+import { getStudent } from "@/app/actions";
 
 export const dynamic = "force-dynamic";
+
+function Stat({ label, value, unit }: { label: string; value: string; unit?: string }) {
+  return (
+    <div className="card p-4">
+      <p className="text-xs font-semibold tracking-wide text-ink-soft">{label}</p>
+      <p className="mt-2 text-2xl font-bold text-ink">
+        {value}
+        {unit && <span className="ml-1 text-sm font-medium text-ink-faint">{unit}</span>}
+      </p>
+    </div>
+  );
+}
 
 export default async function HocVien({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -12,68 +27,50 @@ export default async function HocVien({ params }: { params: Promise<{ id: string
   if (!data) notFound();
   const { student, lessons } = data;
 
-  const input = "w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-sky-500";
+  const last = lessons[lessons.length - 1];
 
   return (
-    <main className="mx-auto w-full max-w-3xl p-4 sm:p-6">
-      <Link href="/" className="text-sm text-slate-500 hover:text-slate-900">
-        ‹ Danh sách
-      </Link>
-
-      <header className="mt-2 mb-6 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">{student.name}</h1>
-          <p className="text-sm text-slate-500">
-            {student.class_code || "chưa có mã lớp"} · {lessons.length} buổi
-          </p>
-        </div>
+    <AppShell
+      title={student.name}
+      studentId={student.id}
+      breadcrumb={
+        <span className="flex items-center gap-2">
+          <Link href="/" className="transition hover:text-sage">
+            Học viên
+          </Link>
+          <span className="text-ink-faint">/</span>
+          <span className="rounded-md bg-sand px-1.5 py-0.5 text-xs font-medium">
+            {student.class_code || "chưa có mã lớp"}
+          </span>
+        </span>
+      }
+      actions={
         <Link
           href={`/phieu/${student.id}`}
-          className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
+          className="flex items-center gap-1.5 rounded-xl bg-sage px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600"
         >
+          <IconSheet />
           Xem phiếu &amp; gửi
         </Link>
-      </header>
+      }
+    >
+      <div className="mb-6 grid gap-3 sm:grid-cols-3">
+        <Stat label="Số buổi đã nhận xét" value={String(lessons.length)} unit="buổi" />
+        <Stat label="Buổi gần nhất" value={last?.day_label || "–"} unit={last ? "" : undefined} />
+        <Stat label="Bài học gần nhất" value={last?.lesson_name || "–"} />
+      </div>
 
       <section className="mb-8">
-        <h2 className="mb-2 font-semibold text-slate-900">Thêm buổi học</h2>
+        <h2 className="mb-3 text-base font-bold text-ink">Thêm buổi học</h2>
         <LessonForm studentId={student.id} nextDay={String(lessons.length + 1).padStart(2, "0")} />
       </section>
 
       <section className="mb-8">
-        <h2 className="mb-2 font-semibold text-slate-900">Các buổi đã nhận xét</h2>
+        <h2 className="mb-3 text-base font-bold text-ink">Các buổi đã nhận xét</h2>
         <LessonList studentId={student.id} lessons={lessons} />
       </section>
 
-      <details className="rounded-xl border border-slate-200 bg-white p-4">
-        <summary className="cursor-pointer font-semibold text-slate-900">Thông tin phiếu</summary>
-        <form action={updateStudent} className="mt-3 grid gap-3 sm:grid-cols-2">
-          <input type="hidden" name="id" value={student.id} />
-          <label className="block">
-            <span className="mb-1 block text-xs font-medium text-slate-600">Tên học sinh</span>
-            <input name="name" defaultValue={student.name} className={input} />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-xs font-medium text-slate-600">Mã lớp</span>
-            <input name="class_code" defaultValue={student.class_code} className={input} />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-xs font-medium text-slate-600">Giáo viên</span>
-            <input name="teacher_name" defaultValue={student.teacher_name} className={input} />
-          </label>
-          <label className="block">
-            <span className="mb-1 block text-xs font-medium text-slate-600">Link playlist</span>
-            <input name="playlist_url" defaultValue={student.playlist_url} className={input} />
-          </label>
-          <div className="sm:col-span-2">
-            <button className="rounded-lg bg-sky-600 px-4 py-2 font-medium text-white hover:bg-sky-700">Lưu</button>
-          </div>
-        </form>
-        <form action={archiveStudent} className="mt-4 border-t border-slate-200 pt-3">
-          <input type="hidden" name="id" value={student.id} />
-          <button className="text-sm text-rose-600 hover:underline">Ẩn học viên này</button>
-        </form>
-      </details>
-    </main>
+      <StudentInfo student={student} />
+    </AppShell>
   );
 }

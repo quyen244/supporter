@@ -3,16 +3,14 @@
 import { useState } from "react";
 import { toPng } from "html-to-image";
 import { PAGE } from "@/lib/layout";
+import { IconImage, IconPdf, IconShare } from "./icons";
 
 const SCALE = 3; // 216 dpi - nét khi phụ huynh phóng to trên điện thoại
 
-function pages(): HTMLElement[] {
-  return Array.from(document.querySelectorAll<HTMLElement>(".phieu-page"));
-}
-
 async function renderPages(): Promise<string[]> {
+  const els = Array.from(document.querySelectorAll<HTMLElement>(".phieu-page"));
   const out: string[] = [];
-  for (const el of pages()) {
+  for (const el of els) {
     out.push(
       await toPng(el, {
         pixelRatio: SCALE,
@@ -42,7 +40,7 @@ function download(href: string, name: string) {
   a.click();
 }
 
-export default function ExportBar({ fileBase }: { fileBase: string }) {
+export default function ExportBar({ fileBase, shareText }: { fileBase: string; shareText: string }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
 
@@ -52,18 +50,21 @@ export default function ExportBar({ fileBase }: { fileBase: string }) {
     try {
       await fn();
     } catch (err) {
-      setNote(err instanceof Error ? err.message : "Có lỗi xảy ra");
+      // Người dùng bấm huỷ ở bảng chia sẻ không phải là lỗi.
+      if (err instanceof DOMException && err.name === "AbortError") return;
+      setNote(err instanceof Error ? err.message : "Có lỗi xảy ra, thử lại nhé.");
     } finally {
       setBusy(null);
     }
   }
 
+  const names = (n: number) => (i: number) =>
+    n > 1 ? `${fileBase} - trang ${i + 1}.png` : `${fileBase}.png`;
+
   const savePng = () =>
     run("png", async () => {
       const imgs = await renderPages();
-      imgs.forEach((src, i) =>
-        download(src, imgs.length > 1 ? `${fileBase} - trang ${i + 1}.png` : `${fileBase}.png`)
-      );
+      imgs.forEach((src, i) => download(src, names(imgs.length)(i)));
     });
 
   const savePdf = () =>
@@ -81,30 +82,40 @@ export default function ExportBar({ fileBase }: { fileBase: string }) {
   const share = () =>
     run("share", async () => {
       const imgs = await renderPages();
-      const files = imgs.map((src, i) =>
-        dataUrlToFile(src, imgs.length > 1 ? `${fileBase} - trang ${i + 1}.png` : `${fileBase}.png`)
-      );
-      if (!navigator.canShare?.({ files })) {
-        setNote("Thiết bị này không chia sẻ trực tiếp được. Hãy tải ảnh về rồi gửi qua Zalo.");
+      const files = imgs.map((src, i) => dataUrlToFile(src, names(imgs.length)(i)));
+      // Ảnh để phụ huynh xem ngay trong khung chat, text để bấm được link.
+      const payload = { files, text: shareText, title: fileBase };
+      if (!navigator.canShare?.(payload)) {
+        setNote("Trình duyệt này không chia sẻ được file. Dùng nút Tải ảnh rồi gửi thủ công qua Zalo.");
         return;
       }
-      await navigator.share({ files, title: fileBase });
+      await navigator.share(payload);
     });
 
-  const btn = "rounded-lg px-4 py-2 text-sm font-medium transition disabled:opacity-50";
+  const ghost =
+    "flex items-center gap-1.5 rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition hover:border-sage-300 disabled:opacity-50";
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <button onClick={share} disabled={!!busy} className={`${btn} bg-sky-600 text-white hover:bg-sky-700`}>
+      <button
+        onClick={share}
+        disabled={!!busy}
+        className="flex items-center gap-1.5 rounded-xl bg-sage px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600 disabled:opacity-50"
+      >
+        <IconShare />
         {busy === "share" ? "Đang tạo ảnh…" : "Gửi qua Zalo"}
       </button>
-      <button onClick={savePng} disabled={!!busy} className={`${btn} bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-slate-50`}>
-        {busy === "png" ? "Đang tạo…" : "Tải ảnh PNG"}
+      <button onClick={savePng} disabled={!!busy} className={ghost}>
+        <IconImage />
+        {busy === "png" ? "Đang tạo…" : "Tải ảnh"}
       </button>
-      <button onClick={savePdf} disabled={!!busy} className={`${btn} bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-slate-50`}>
+      <button onClick={savePdf} disabled={!!busy} className={ghost}>
+        <IconPdf />
         {busy === "pdf" ? "Đang tạo…" : "Tải PDF"}
       </button>
-      {note && <p className="w-full text-sm text-amber-700">{note}</p>}
+      {note && (
+        <p className="w-full rounded-xl bg-warn-bg px-3 py-2 text-sm text-warn">{note}</p>
+      )}
     </div>
   );
 }
