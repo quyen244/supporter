@@ -50,6 +50,30 @@ async function migrate() {
   // chưa tồn tại lúc chạy lần đầu; mọi bản ghi mới đều được gán owner.
   await sql`alter table students add column if not exists owner_id text`;
   await sql`create index if not exists students_owner_idx on students (owner_id)`;
+
+  /*
+   * Lịch dạy lưu giờ theo đồng hồ treo tường (ngày + số phút từ 0h), không dùng
+   * timestamptz. Buổi dạy "thứ Hai 14h" phải luôn là 14h bất kể server đặt ở
+   * múi giờ nào; dùng timestamptz sẽ lệch giờ khi deploy lên server UTC.
+   * Buổi lặp hàng tuần được tạo thành nhiều dòng thật, nên sửa hoặc đánh dấu
+   * từng buổi độc lập được.
+   */
+  await sql`
+    create table if not exists schedules (
+      id           uuid primary key default gen_random_uuid(),
+      owner_id     text not null,
+      student_id   uuid references students(id) on delete set null,
+      title        text not null default '',
+      on_date      date not null,
+      start_min    integer not null,
+      duration_min integer not null default 60,
+      location     text not null default '',
+      note         text not null default '',
+      done         boolean not null default false,
+      created_at   timestamptz not null default now()
+    )
+  `;
+  await sql`create index if not exists schedules_owner_date_idx on schedules (owner_id, on_date)`;
 }
 
 export function ready() {
@@ -66,6 +90,20 @@ export type Student = {
   playlist_url: string;
   parent_note: string;
   archived: boolean;
+  created_at: Date;
+};
+
+export type Schedule = {
+  id: string;
+  owner_id: string;
+  student_id: string | null;
+  title: string;
+  on_date: string;
+  start_min: number;
+  duration_min: number;
+  location: string;
+  note: string;
+  done: boolean;
   created_at: Date;
 };
 

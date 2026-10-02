@@ -37,6 +37,9 @@ yarn-error.log*
 # ảnh kiểm thử, chỉ xem cục bộ
 /artifacts
 
+# ảnh gốc chưa tối ưu; bản dùng thật đã nén sang public/img/login.webp
+/images
+
 # vercel
 .vercel
 

@@ -1,11 +1,12 @@
-# Phiếu học tập
+# Teachly
 
-Nhập nhận xét sau mỗi buổi dạy rồi xuất ra phiếu giống hệt bản PDF của trung tâm, thay cho việc điền tay.
+Quản lý lớp dạy thêm: lên lịch, ghi nhận xét sau mỗi buổi, rồi xuất ra phiếu giống hệt bản PDF của trung tâm.
 
 ## Chức năng
 
 - Nhiều giáo viên, mỗi người đăng nhập bằng email và chỉ thấy học viên của mình.
 - Vai trò quản trị: xem được học viên của mọi giáo viên, đổi quyền, khoá tài khoản.
+- Lịch dạy theo tuần: bấm vào ô trống trên lưới để thêm buổi, đánh dấu buổi đã dạy.
 - Quản lý nhiều học viên, mỗi học viên một phiếu tích luỹ dần qua các buổi.
 - Thư viện mẫu câu cho 6 nhóm: Từ vựng, Nghe, Nói, Đọc, Viết, Thái độ.
   Mỗi câu có ô nhập số ngay trên câu, ví dụ "Đọc hiểu được khoảng __% bài đọc".
@@ -81,6 +82,21 @@ Kết quả là lưới bảng trùng khít từng pixel với bản gốc.
 Ba ảnh trong `public/img` (logo, ngôi sao, hình mờ) cũng được trích thẳng từ PDF gốc, kèm kênh trong suốt.
 
 Nếu trung tâm đổi mẫu phiếu, hãy đo lại rồi cập nhật `layout.ts` thay vì chỉnh số bằng cảm tính.
+
+## Lịch dạy
+
+Giờ được lưu theo đồng hồ treo tường: cột `on_date` kiểu `date` và `start_min` là số phút tính từ 0h.
+Cố tình không dùng `timestamptz`, vì buổi dạy "thứ Hai 14h" phải luôn là 14h bất kể server đặt ở múi giờ nào.
+Khi đọc ra phải ép `on_date::text`, nếu không driver trả về đối tượng `Date` và phía client sẽ hỏng.
+
+Buổi lặp hàng tuần được tạo thành nhiều dòng thật thay vì một quy tắc lặp.
+Nhờ vậy sửa hoặc đánh dấu đã dạy cho từng buổi không ảnh hưởng các buổi còn lại.
+
+## Ảnh trang đăng nhập
+
+Ảnh nền nửa trái lấy từ `public/img/login.webp`, hiển thị tràn viền theo kiểu `cover`.
+Nên dùng ảnh dọc tỉ lệ 9:16: khung hiển thị cao hơn rộng, ảnh ngang 16:9 sẽ bị cắt chỉ còn khoảng một phần ba ở giữa.
+Nhớ nén ảnh trước khi thay, bản gốc PNG thường nặng trên 1MB trong khi WebP chỉ khoảng 50KB.
 
 ## Thư viện mẫu câu
 

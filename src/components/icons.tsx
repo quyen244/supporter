@@ -108,6 +108,17 @@ export function IconLink({ className }: P) {
   );
 }
 
+export function IconCalendar({ className }: P) {
+  return (
+    <svg {...base} className={className} width="20" height="20" aria-hidden>
+      <rect x="3.5" y="5" width="17" height="15" rx="2.5" />
+      <path d="M3.5 9.5h17M8 3.5v3M16 3.5v3" />
+      <circle cx="8.5" cy="13.5" r="1" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="13.5" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 export function IconShield({ className }: P) {
   return (
     <svg {...base} className={className} width="20" height="20" aria-hidden>

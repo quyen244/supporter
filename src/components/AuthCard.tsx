@@ -15,23 +15,19 @@ export default function AuthCard({
     <main className="grid min-h-dvh place-items-center bg-sand p-4 sm:p-8">
       <div className="grid w-full max-w-5xl overflow-hidden rounded-[28px] border border-line bg-white shadow-[0_24px_60px_-30px_rgba(47,51,39,0.35)] md:grid-cols-2">
         {/*
-         * Nửa trái: thả ảnh minh hoạ vào public/img/login.png là nó hiện ra.
-         * Chưa có ảnh thì chỉ thấy nền chuyển sắc, không vỡ bố cục.
+         * Nửa trái tràn viền: ảnh phủ kín khung nên tỉ lệ ảnh nào cũng dùng được,
+         * chỉ khác mức cắt cạnh. Thay ảnh tại public/img/login.webp.
+         * Chưa có ảnh thì còn lại nền chuyển sắc, không vỡ bố cục.
          */}
-        <section className="relative hidden flex-col justify-end bg-sage-50 p-10 md:flex">
+        <section className="relative hidden min-h-[560px] bg-sage-100 md:block">
           <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                "url('/img/login.png'), radial-gradient(circle at 50% 38%, var(--color-sage-100), var(--color-sage-50) 62%)",
-              backgroundSize: "contain, cover",
-              backgroundPosition: "center 38%, center",
-              backgroundRepeat: "no-repeat, no-repeat",
-            }}
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: "url('/img/login.webp')" }}
           />
-          <div className="relative">
-            <h2 className="text-[32px] font-bold leading-tight tracking-tight text-sage-900">Phiếu học tập</h2>
-            <p className="mt-3 max-w-xs text-[15px] leading-relaxed text-ink-soft">
+          <div className="absolute inset-0 bg-gradient-to-t from-sage-900/85 via-sage-900/30 to-sage-900/5" />
+          <div className="relative flex h-full flex-col justify-end p-10">
+            <h2 className="text-[34px] font-bold leading-none tracking-tight text-white">Teachly</h2>
+            <p className="mt-3 max-w-xs text-[15px] leading-relaxed text-white/85">
               Nhận xét xong một buổi dạy trong vài chạm, xuất phiếu gửi phụ huynh ngay.
             </p>
           </div>
@@ -42,8 +38,8 @@ export default function AuthCard({
             <span className="grid h-10 w-10 place-items-center rounded-2xl bg-sage text-white">
               <IconCap />
             </span>
-            <span className="text-lg font-semibold tracking-tight text-ink">
-              Phiếu <span className="text-sage">học tập</span>
+            <span className="text-lg font-bold tracking-tight text-ink">
+              Teach<span className="text-sage">ly</span>
             </span>
           </div>
 

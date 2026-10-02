@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Phiếu học tập",
-  description: "Nhập nhận xét sau buổi dạy và xuất phiếu gửi phụ huynh",
+  title: "Teachly",
+  description: "Quản lý lớp, lịch dạy và phiếu nhận xét gửi phụ huynh",
 };
 
 export const viewport = { width: "device-width", initialScale: 1 };

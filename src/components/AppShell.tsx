@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
-import { IconCap, IconLogout, IconSheet, IconShield, IconStudents } from "./icons";
+import { IconCalendar, IconCap, IconLogout, IconSheet, IconShield, IconStudents } from "./icons";
 
 function RailLink({
   href,
@@ -63,6 +63,9 @@ export default function AppShell({
       <RailLink href="/" active={path === "/"} label="Học viên">
         <IconStudents />
       </RailLink>
+      <RailLink href="/lich" active={path.startsWith("/lich")} label="Lịch dạy">
+        <IconCalendar />
+      </RailLink>
       {studentId && (
         <RailLink href={`/phieu/${studentId}`} active={path.startsWith("/phieu/")} label="Phiếu">
           <IconSheet />
@@ -102,7 +105,10 @@ export default function AppShell({
           <span className="grid h-8 w-8 place-items-center rounded-xl bg-sage-100 text-sage-700">
             <IconCap className="scale-75" />
           </span>
-          Phiếu học tập
+          Teachly
+        </Link>
+        <Link href="/lich" aria-label="Lịch dạy" className="grid h-9 w-9 place-items-center rounded-xl text-ink-soft">
+          <IconCalendar />
         </Link>
         {admin && (
           <Link href="/quan-tri" aria-label="Quản trị" className="grid h-9 w-9 place-items-center rounded-xl text-ink-soft">
