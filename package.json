@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@neon/config": "^1.8.3",
+    "@neon/env": "^1.4.8",
     "better-auth": "^1.7.7",
     "html-to-image": "^1.11.13",
     "jspdf": "^4.2.1",
