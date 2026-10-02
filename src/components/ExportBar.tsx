@@ -111,14 +111,13 @@ export default function ExportBar({
 
   const ghost =
     "flex items-center gap-1.5 rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition hover:border-sage-300 disabled:opacity-50";
+  const primary =
+    "flex items-center gap-1.5 rounded-xl bg-sage px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600 disabled:opacity-50";
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <button
-        onClick={share}
-        disabled={!!busy}
-        className="flex items-center gap-1.5 rounded-xl bg-sage px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600 disabled:opacity-50"
-      >
+      {/* Ẩn trên máy tính: Zalo Desktop không nhận chia sẻ từ trình duyệt. */}
+      <button onClick={share} disabled={!!busy} className={`touch-only ${primary}`}>
         <IconShare />
         {busy === "share" ? "Đang tạo ảnh…" : "Gửi qua Zalo"}
       </button>

@@ -50,6 +50,18 @@ body {
   color-scheme: light;
 }
 
+/*
+ * Chỉ hiện trên thiết bị cảm ứng. Dùng cho nút Gửi qua Zalo: Zalo Desktop là
+ * ứng dụng Electron cài dạng .exe nên Windows không liệt kê nó trong hộp chia
+ * sẻ, bấm vào chỉ tổ mở ra danh sách không có Zalo.
+ * Dùng media query thay vì đọc userAgent để tránh lệch giữa server và client.
+ */
+@media (pointer: fine) {
+  .touch-only {
+    display: none;
+  }
+}
+
 @utility card {
   background: #fff;
   border-radius: var(--radius-card);

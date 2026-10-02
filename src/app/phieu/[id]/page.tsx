@@ -50,10 +50,16 @@ export default async function Phieu({ params }: { params: Promise<{ id: string }
         </div>
       </div>
 
-      <p className="mt-3 text-xs leading-relaxed text-ink-faint">
-        Nút Gửi qua Zalo tạo ảnh phiếu kèm danh sách link. Link in trên ảnh không bấm được, nên chúng được gửi
-        thêm ở phần chữ. Nếu Zalo chỉ nhận ảnh mà bỏ phần chữ, hãy bấm Sao chép link rồi dán vào khung chat.
-      </p>
+      <div className="mt-3 space-y-1.5 text-xs leading-relaxed text-ink-faint">
+        <p>
+          <span className="font-semibold text-ink-soft">Trên điện thoại:</span> bấm Gửi qua Zalo, chọn phụ huynh.
+          Ảnh kèm theo phần chữ chứa link để bấm được.
+        </p>
+        <p>
+          <span className="font-semibold text-ink-soft">Trên máy tính:</span> Zalo Desktop không nhận chia sẻ
+          trực tiếp từ trình duyệt, nên hãy bấm Tải ảnh rồi kéo ảnh vào khung chat, kèm nút Sao chép link.
+        </p>
+      </div>
     </AppShell>
   );
 }
