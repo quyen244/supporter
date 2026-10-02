@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { toPng } from "html-to-image";
 import { PAGE } from "@/lib/layout";
-import { IconImage, IconPdf, IconShare } from "./icons";
+import { useToast } from "./Toast";
+import { IconCopy, IconImage, IconPdf, IconShare } from "./icons";
 
 const SCALE = 3; // 216 dpi - nét khi phụ huynh phóng to trên điện thoại
 
@@ -40,23 +41,36 @@ function download(href: string, name: string) {
   a.click();
 }
 
-export default function ExportBar({ fileBase, shareText }: { fileBase: string; shareText: string }) {
+export default function ExportBar({
+  fileBase,
+  shareText,
+  hasLinks,
+}: {
+  fileBase: string;
+  shareText: string;
+  hasLinks: boolean;
+}) {
   const [busy, setBusy] = useState<string | null>(null);
-  const [note, setNote] = useState<string | null>(null);
+  const toast = useToast();
 
   async function run(label: string, fn: () => Promise<void>) {
     setBusy(label);
-    setNote(null);
     try {
       await fn();
     } catch (err) {
       // Người dùng bấm huỷ ở bảng chia sẻ không phải là lỗi.
       if (err instanceof DOMException && err.name === "AbortError") return;
-      setNote(err instanceof Error ? err.message : "Có lỗi xảy ra, thử lại nhé.");
+      toast.warn(err instanceof Error ? err.message : "Có lỗi xảy ra, thử lại nhé.");
     } finally {
       setBusy(null);
     }
   }
+
+  const copyLinks = () =>
+    run("copy", async () => {
+      await navigator.clipboard.writeText(shareText);
+      toast.ok("Đã sao chép link, dán vào Zalo là được");
+    });
 
   const names = (n: number) => (i: number) =>
     n > 1 ? `${fileBase} - trang ${i + 1}.png` : `${fileBase}.png`;
@@ -65,6 +79,7 @@ export default function ExportBar({ fileBase, shareText }: { fileBase: string; s
     run("png", async () => {
       const imgs = await renderPages();
       imgs.forEach((src, i) => download(src, names(imgs.length)(i)));
+      toast.ok(imgs.length > 1 ? `Đã tải ${imgs.length} ảnh` : "Đã tải ảnh phiếu");
     });
 
   const savePdf = () =>
@@ -77,16 +92,18 @@ export default function ExportBar({ fileBase, shareText }: { fileBase: string; s
         doc.addImage(src, "PNG", 0, 0, PAGE.w, PAGE.h);
       });
       doc.save(`${fileBase}.pdf`);
+      toast.ok("Đã tải phiếu PDF");
     });
 
   const share = () =>
     run("share", async () => {
       const imgs = await renderPages();
       const files = imgs.map((src, i) => dataUrlToFile(src, names(imgs.length)(i)));
-      // Ảnh để phụ huynh xem ngay trong khung chat, text để bấm được link.
+      // Gửi kèm text để link bấm được. Một số ứng dụng nhận ảnh thì bỏ qua phần
+      // text, nên vẫn giữ nút Sao chép link làm đường lui.
       const payload = { files, text: shareText, title: fileBase };
       if (!navigator.canShare?.(payload)) {
-        setNote("Trình duyệt này không chia sẻ được file. Dùng nút Tải ảnh rồi gửi thủ công qua Zalo.");
+        toast.warn("Thiết bị này không chia sẻ được file. Dùng nút Tải ảnh rồi gửi thủ công.");
         return;
       }
       await navigator.share(payload);
@@ -113,8 +130,11 @@ export default function ExportBar({ fileBase, shareText }: { fileBase: string; s
         <IconPdf />
         {busy === "pdf" ? "Đang tạo…" : "Tải PDF"}
       </button>
-      {note && (
-        <p className="w-full rounded-xl bg-warn-bg px-3 py-2 text-sm text-warn">{note}</p>
+      {hasLinks && (
+        <button onClick={copyLinks} disabled={!!busy} className={ghost} title="Dán vào Zalo nếu link không bấm được">
+          <IconCopy />
+          Sao chép link
+        </button>
       )}
     </div>
   );

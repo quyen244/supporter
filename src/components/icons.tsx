@@ -108,6 +108,33 @@ export function IconLink({ className }: P) {
   );
 }
 
+export function IconCheck({ className }: P) {
+  return (
+    <svg {...base} className={className} width="18" height="18" aria-hidden>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m8.2 12.2 2.6 2.6 5-5.4" />
+    </svg>
+  );
+}
+
+export function IconWarn({ className }: P) {
+  return (
+    <svg {...base} className={className} width="18" height="18" aria-hidden>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7.5v5.2M12 16.3v.2" />
+    </svg>
+  );
+}
+
+export function IconCopy({ className }: P) {
+  return (
+    <svg {...base} className={className} width="18" height="18" aria-hidden>
+      <rect x="9" y="9" width="11" height="11" rx="2.5" />
+      <path d="M15 6.5V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h.5" />
+    </svg>
+  );
+}
+
 /** Logo Google giữ nguyên 4 màu gốc, không tô theo currentColor. */
 export function IconGoogle({ className }: P) {
   return (

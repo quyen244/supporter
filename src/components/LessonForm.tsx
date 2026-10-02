@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import CommentBuilder from "./CommentBuilder";
+import { useToast } from "./Toast";
 import { saveLesson } from "@/app/actions";
 
 export type LessonDraft = {
@@ -24,6 +25,7 @@ export default function LessonForm({
   onDone?: () => void;
 }) {
   const [comment, setComment] = useState(lesson?.comment ?? "");
+  const toast = useToast();
 
   function addLine(line: string) {
     setComment((prev) => (prev.trim() ? `${prev.replace(/\s+$/, "")}\n- ${line}` : `- ${line}`));
@@ -33,6 +35,7 @@ export default function LessonForm({
     <form
       action={async (fd) => {
         await saveLesson(fd);
+        toast.ok(lesson?.id ? "Đã lưu nhận xét" : "Đã thêm buổi học");
         if (!lesson?.id) setComment("");
         onDone?.();
       }}

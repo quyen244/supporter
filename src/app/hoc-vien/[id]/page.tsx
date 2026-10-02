@@ -57,6 +57,8 @@ export default async function HocVien({ params }: { params: Promise<{ id: string
         </Link>
       }
     >
+      <StudentInfo student={student} />
+
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
         <Stat label="Số buổi đã nhận xét" value={String(lessons.length)} unit="buổi" />
         <Stat label="Buổi gần nhất" value={last?.day_label || "–"} unit={last ? "" : undefined} />
@@ -68,12 +70,10 @@ export default async function HocVien({ params }: { params: Promise<{ id: string
         <LessonForm studentId={student.id} nextDay={String(lessons.length + 1).padStart(2, "0")} />
       </section>
 
-      <section className="mb-8">
+      <section>
         <h2 className="mb-3 text-base font-bold text-ink">Các buổi đã nhận xét</h2>
         <LessonList studentId={student.id} lessons={lessons} />
       </section>
-
-      <StudentInfo student={student} />
     </AppShell>
   );
 }

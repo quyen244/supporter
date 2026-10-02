@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { createSlot, deleteFollowing, deleteSlot, toggleDone, updateSlot, type SlotRow } from "@/app/lich/actions";
 import { hhmm } from "@/lib/week";
+import { useToast } from "./Toast";
 import { IconTrash } from "./icons";
 
 export type Draft =
@@ -19,6 +20,7 @@ export default function SlotDialog({
   onClose: () => void;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const toast = useToast();
 
   useEffect(() => {
     const el = ref.current;
@@ -36,6 +38,10 @@ export default function SlotDialog({
 
   async function submit(fd: FormData) {
     await (editing ? updateSlot(fd) : createSlot(fd));
+    const weeks = Number(fd.get("repeat_weeks") ?? 1);
+    toast.ok(
+      editing ? "Đã lưu buổi dạy" : weeks > 1 ? `Đã thêm ${weeks} buổi dạy hàng tuần` : "Đã thêm buổi dạy"
+    );
     onClose();
   }
 
@@ -161,7 +167,13 @@ export default function SlotDialog({
 
       {editing && (
         <div className="flex flex-wrap items-center gap-2 border-t border-line bg-cream px-6 py-4">
-          <form action={async (fd) => { await toggleDone(fd); onClose(); }}>
+          <form
+            action={async (fd) => {
+              await toggleDone(fd);
+              toast.ok(slot!.done ? "Đã bỏ đánh dấu" : "Đã đánh dấu dạy xong");
+              onClose();
+            }}
+          >
             <input type="hidden" name="id" value={slot!.id} />
             <button
               className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
@@ -172,7 +184,14 @@ export default function SlotDialog({
             </button>
           </form>
 
-          <form action={async (fd) => { await deleteSlot(fd); onClose(); }} className="ml-auto">
+          <form
+            action={async (fd) => {
+              await deleteSlot(fd);
+              toast.ok("Đã xoá buổi dạy");
+              onClose();
+            }}
+            className="ml-auto"
+          >
             <input type="hidden" name="id" value={slot!.id} />
             <button className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium text-alert transition hover:bg-alert-bg">
               <IconTrash />
@@ -180,7 +199,13 @@ export default function SlotDialog({
             </button>
           </form>
 
-          <form action={async (fd) => { await deleteFollowing(fd); onClose(); }}>
+          <form
+            action={async (fd) => {
+              await deleteFollowing(fd);
+              toast.ok("Đã xoá cả chuỗi buổi dạy từ ngày này");
+              onClose();
+            }}
+          >
             <input type="hidden" name="id" value={slot!.id} />
             <button className="rounded-xl px-3 py-2 text-sm font-medium text-alert transition hover:bg-alert-bg">
               Xoá cả chuỗi từ đây

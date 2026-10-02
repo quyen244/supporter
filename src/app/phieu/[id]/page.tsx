@@ -42,7 +42,7 @@ export default async function Phieu({ params }: { params: Promise<{ id: string }
           </Link>
         </span>
       }
-      actions={<ExportBar fileBase={fileBase} shareText={links.join("\n")} />}
+      actions={<ExportBar fileBase={fileBase} shareText={links.join("\n")} hasLinks={links.length > 1} />}
     >
       <div className="overflow-x-auto rounded-card border border-line bg-sand p-3 sm:p-5">
         <div className="mx-auto flex w-fit flex-col gap-5">
@@ -51,8 +51,8 @@ export default async function Phieu({ params }: { params: Promise<{ id: string }
       </div>
 
       <p className="mt-3 text-xs leading-relaxed text-ink-faint">
-        Nút Gửi qua Zalo tạo ảnh phiếu kèm danh sách link. Phụ huynh xem ảnh ngay trong khung chat, và bấm được
-        link playlist hoặc kết quả test trong phần chữ đi kèm.
+        Nút Gửi qua Zalo tạo ảnh phiếu kèm danh sách link. Link in trên ảnh không bấm được, nên chúng được gửi
+        thêm ở phần chữ. Nếu Zalo chỉ nhận ảnh mà bỏ phần chữ, hãy bấm Sao chép link rồi dán vào khung chat.
       </p>
     </AppShell>
   );

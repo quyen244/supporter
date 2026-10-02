@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import LessonForm, { type LessonDraft } from "./LessonForm";
+import { useToast } from "./Toast";
 import { deleteLesson } from "@/app/actions";
 import { IconEdit, IconLink, IconTrash } from "./icons";
 
 export default function LessonList({ studentId, lessons }: { studentId: string; lessons: LessonDraft[] }) {
   const [editing, setEditing] = useState<string | null>(null);
+  const toast = useToast();
 
   if (lessons.length === 0) {
     return (
@@ -56,7 +58,12 @@ export default function LessonList({ studentId, lessons }: { studentId: string; 
               >
                 <IconEdit />
               </button>
-              <form action={deleteLesson}>
+              <form
+                action={async (fd) => {
+                  await deleteLesson(fd);
+                  toast.ok("Đã xoá buổi học");
+                }}
+              >
                 <input type="hidden" name="id" value={l.id} />
                 <input type="hidden" name="student_id" value={studentId} />
                 <button
