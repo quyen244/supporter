@@ -74,26 +74,7 @@ export default function AuthForm({
 
   return (
     <>
-      {google && (
-        <div className="mt-7">
-          <button
-            type="button"
-            onClick={withGoogle}
-            disabled={busy}
-            className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-line bg-white px-4 py-3 font-semibold text-ink transition hover:border-sage-300 hover:bg-sage-50 disabled:opacity-60"
-          >
-            <IconGoogle />
-            Tiếp tục với Google
-          </button>
-          <div className="my-5 flex items-center gap-3">
-            <span className="h-px flex-1 bg-line" />
-            <span className="text-xs text-ink-faint">hoặc dùng email</span>
-            <span className="h-px flex-1 bg-line" />
-          </div>
-        </div>
-      )}
-
-      <form onSubmit={onSubmit} className={google ? "space-y-4" : "mt-7 space-y-4"}>
+      <form onSubmit={onSubmit} className="mt-7 space-y-4">
         {mode === "signup" && (
           <div>
             <label htmlFor="name" className="label">
@@ -119,7 +100,7 @@ export default function AuthForm({
             name="email"
             type="email"
             required
-            autoFocus={mode === "signin" && !google}
+            autoFocus={mode === "signin"}
             autoComplete="email"
             placeholder="ten@gmail.com"
             className="field"
@@ -155,6 +136,25 @@ export default function AuthForm({
           {busy ? "Đang xử lý…" : mode === "signup" ? "Tạo tài khoản" : "Đăng nhập"}
         </button>
       </form>
+
+      {google && (
+        <>
+          <div className="my-5 flex items-center gap-3">
+            <span className="h-px flex-1 bg-line" />
+            <span className="text-xs text-ink-faint">hoặc</span>
+            <span className="h-px flex-1 bg-line" />
+          </div>
+          <button
+            type="button"
+            onClick={withGoogle}
+            disabled={busy}
+            className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-line bg-white px-4 py-3 font-semibold text-ink transition hover:border-sage-300 hover:bg-sage-50 disabled:opacity-60"
+          >
+            <IconGoogle />
+            Tiếp tục với Google
+          </button>
+        </>
+      )}
     </>
   );
 }
