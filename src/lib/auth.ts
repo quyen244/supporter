@@ -16,9 +16,35 @@ const googleSecret = process.env.GOOGLE_CLIENT_SECRET;
 /** Chưa khai báo khoá Google thì không bật, để chạy cục bộ không cần tài khoản Google. */
 export const googleEnabled = Boolean(googleId && googleSecret);
 
+/*
+ * Vercel tự cấp hai biến: VERCEL_PROJECT_PRODUCTION_URL là tên miền chính,
+ * VERCEL_URL là tên miền riêng của từng lần deploy. Lấy chúng làm phương án dự
+ * phòng để không phụ thuộc hoàn toàn vào BETTER_AUTH_URL khai tay.
+ */
+const vercelProd = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+const vercelDeploy = process.env.VERCEL_URL;
+
+const baseURL =
+  process.env.BETTER_AUTH_URL ||
+  (vercelProd ? `https://${vercelProd}` : undefined) ||
+  "http://localhost:3000";
+
+/*
+ * Better Auth so header Origin của trình duyệt với baseURL, lệch một ký tự là
+ * trả về INVALID_ORIGIN 403. Lỗi này rất khó thấy vì gọi bằng curl thì không
+ * có header Origin nên vẫn trả 200. Khai thêm mọi tên miền hợp lệ ở đây để
+ * bản xem trước của Vercel, vốn mỗi lần deploy một tên miền khác, cũng chạy.
+ */
+const trustedOrigins = [
+  baseURL,
+  vercelProd && `https://${vercelProd}`,
+  vercelDeploy && `https://${vercelDeploy}`,
+].filter((v): v is string => Boolean(v));
+
 export const auth = betterAuth({
   database: new Pool({ connectionString, ssl: local ? false : { rejectUnauthorized: true } }),
-  baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
+  baseURL,
+  trustedOrigins,
   secret: process.env.BETTER_AUTH_SECRET,
 
   emailAndPassword: {
