@@ -66,10 +66,7 @@ Quản trị viên không tự hạ quyền hoặc tự khoá được chính m�
 
 1. Đẩy repo này lên GitHub.
 2. Vào Vercel, chọn Import Project và trỏ tới repo.
-3. Trong tab Storage của project, thêm một database Postgres (Neon có gói miễn phí).
-   Vercel tự gắn `DATABASE_URL` vào project.
-4. Trong Settings > Environment Variables, thêm `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` và `ADMIN_EMAILS`.
-5. Deploy, sau đó chạy `npx @better-auth/cli migrate` một lần với `DATABASE_URL` trỏ tới database thật.
+Các bước đầy đủ nằm ở [DEPLOY.md](DEPLOY.md), kèm phần tra cứu khi hỏng.
 
 Sau đó mở trang web trên điện thoại và thêm vào màn hình chính để dùng như một app.
 
