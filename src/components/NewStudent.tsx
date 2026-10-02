@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { createStudent } from "@/app/actions";
+import SubmitButton from "./SubmitButton";
 import { IconPlus } from "./icons";
 
 export default function NewStudent() {
@@ -11,7 +12,7 @@ export default function NewStudent() {
     <>
       <button
         onClick={() => dialog.current?.showModal()}
-        className="flex items-center gap-1.5 rounded-md bg-sage px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600"
+        className="press flex items-center gap-1.5 rounded-md bg-sage px-4 py-2.5 text-sm font-semibold text-white hover:bg-sage-600"
       >
         <IconPlus />
         Thêm học viên
@@ -58,13 +59,11 @@ export default function NewStudent() {
             <button
               type="button"
               onClick={() => dialog.current?.close()}
-              className="rounded-md px-4 py-2.5 text-sm font-medium text-ink-soft transition hover:bg-sand"
+              className="press rounded-md px-4 py-2.5 text-sm font-medium text-ink-soft hover:bg-sand"
             >
               Huỷ
             </button>
-            <button className="rounded-md bg-sage px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600">
-              Thêm
-            </button>
+            <SubmitButton pendingLabel="Đang thêm…">Thêm</SubmitButton>
           </div>
         </form>
       </dialog>

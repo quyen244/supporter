@@ -54,7 +54,7 @@ export default function LessonList({ studentId, lessons }: { studentId: string; 
                 type="button"
                 onClick={() => setEditing(l.id!)}
                 aria-label="Sửa buổi học"
-                className="grid h-8 w-8 place-items-center rounded-md text-ink-faint transition hover:bg-sand hover:text-ink"
+                className="press grid h-8 w-8 place-items-center rounded-md text-ink-faint hover:bg-sand hover:text-ink"
               >
                 <IconEdit />
               </button>
@@ -68,7 +68,7 @@ export default function LessonList({ studentId, lessons }: { studentId: string; 
                 <input type="hidden" name="student_id" value={studentId} />
                 <button
                   aria-label="Xoá buổi học"
-                  className="grid h-8 w-8 place-items-center rounded-md text-ink-faint transition hover:bg-alert-bg hover:text-alert"
+                  className="press grid h-8 w-8 place-items-center rounded-md text-ink-faint hover:bg-alert-bg hover:text-alert"
                 >
                   <IconTrash />
                 </button>

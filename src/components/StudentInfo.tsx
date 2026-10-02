@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { archiveStudent, updateStudent } from "@/app/actions";
 import type { Student } from "@/lib/db";
+import SubmitButton from "./SubmitButton";
 import { useToast } from "./Toast";
 
 export default function StudentInfo({ student }: { student: Student }) {
@@ -63,17 +64,15 @@ export default function StudentInfo({ student }: { student: Student }) {
               <input id="sp" name="playlist_url" defaultValue={student.playlist_url} className="field" />
             </div>
             <div>
-              <button className="rounded-md bg-sage px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600">
-                Lưu thay đổi
-              </button>
+              <SubmitButton pendingLabel="Đang lưu…">Lưu thay đổi</SubmitButton>
             </div>
           </form>
 
           <form action={archiveStudent} className="mt-5 border-t border-line pt-4">
             <input type="hidden" name="id" value={student.id} />
-            <button className="text-sm font-medium text-alert transition hover:underline">
+            <SubmitButton variant="danger" pendingLabel="Đang ẩn…" className="px-0 font-medium hover:underline">
               Ẩn học viên này khỏi danh sách
-            </button>
+            </SubmitButton>
           </form>
         </div>
       )}

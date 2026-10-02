@@ -176,12 +176,20 @@ export default function ExportBar({
     });
 
   const ghost =
-    "flex items-center gap-1.5 rounded-md border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition hover:border-sage-300 disabled:opacity-50";
+    "press flex items-center gap-1.5 rounded-md border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink hover:border-sage-300 disabled:opacity-50";
   const primary =
-    "flex items-center gap-1.5 rounded-md bg-sage px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600 disabled:opacity-50";
+    "press flex items-center gap-1.5 rounded-md bg-sage px-4 py-2.5 text-sm font-semibold text-white hover:bg-sage-600 disabled:opacity-50";
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="relative flex flex-wrap items-center gap-2">
+      {/* Dựng ảnh phiếu ở 216dpi mất vài giây, cần cho người dùng thấy máy đang chạy */}
+      {busy && (
+        <span
+          role="status"
+          aria-label="Đang dựng phiếu"
+          className="anim-bar absolute -top-2 left-0 h-0.5 w-full overflow-hidden rounded-sm bg-sand"
+        />
+      )}
       {/* Ẩn trên máy tính: Zalo Desktop không nhận chia sẻ từ trình duyệt. */}
       <button onClick={share} disabled={!!busy} className={`touch-only ${primary}`}>
         <IconShare />

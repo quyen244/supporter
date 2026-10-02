@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import CommentBuilder from "./CommentBuilder";
+import SubmitButton from "./SubmitButton";
 import { useToast } from "./Toast";
 import { saveLesson } from "@/app/actions";
 
@@ -101,14 +102,12 @@ export default function LessonForm({
       </div>
 
       <div className="flex gap-2 pt-1">
-        <button className="rounded-md bg-sage px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600">
-          {lesson?.id ? "Lưu" : "Thêm buổi"}
-        </button>
+        <SubmitButton pendingLabel="Đang lưu…">{lesson?.id ? "Lưu" : "Thêm buổi"}</SubmitButton>
         {onDone && (
           <button
             type="button"
             onClick={onDone}
-            className="rounded-md px-4 py-2.5 text-sm font-medium text-ink-soft transition hover:bg-sand"
+            className="press rounded-md px-4 py-2.5 text-sm font-medium text-ink-soft hover:bg-sand"
           >
             Huỷ
           </button>

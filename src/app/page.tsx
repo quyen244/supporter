@@ -59,7 +59,7 @@ export default async function Home() {
               <li key={s.id}>
                 <Link
                   href={`/hoc-vien/${s.id}`}
-                  className="card group flex h-full items-center gap-3.5 p-4 transition hover:border-sage-300"
+                  className="card press group flex h-full items-center gap-3.5 p-4 hover:border-sage-300 hover:bg-sage-50/40"
                 >
                   <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md bg-sage-100 text-base font-bold text-sage-700">
                     {initials(s.name)}

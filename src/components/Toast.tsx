@@ -43,7 +43,7 @@ export default function ToastProvider({ children }: { children: React.ReactNode 
         {items.map((i) => (
           <div
             key={i.id}
-            className={`pointer-events-auto flex items-center gap-2.5 rounded-md px-4 py-2.5 text-sm font-medium ${
+            className={`anim-toast pointer-events-auto flex items-center gap-2.5 rounded-md px-4 py-2.5 text-sm font-medium ${
               i.kind === "ok" ? "bg-sage-700 text-white" : "bg-alert text-white"
             }`}
           >

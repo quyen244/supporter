@@ -39,6 +39,13 @@
      các điều khiển nằm bên trong một chút. */
   --radius-card: 8px;
   --radius-field: 6px;
+
+  /* Chuyển động: nhanh và tiết chế. Đường cong tăng tốc nhanh rồi dừng êm,
+     hợp với giao diện công cụ dùng hằng ngày hơn là hiệu ứng nảy. */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --t-micro: 120ms;
+  --t-base: 180ms;
+  --t-page: 240ms;
 }
 
 body {
@@ -106,4 +113,107 @@ body {
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--color-ink-soft);
+}
+
+/* ===== Chuyển động ===================================================== */
+
+/* Nội dung trang hiện lên khi điều hướng xong. Dịch 6px là đủ để mắt nhận ra
+   trang đã đổi, nhiều hơn sẽ thành giật. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Vạch tiến trình chạy ở mép trên khi đang chờ trang mới */
+@keyframes bar-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(400%);
+  }
+}
+
+.anim-page {
+  animation: rise-in var(--t-page) var(--ease-out) both;
+}
+
+.anim-toast {
+  animation: toast-in var(--t-base) var(--ease-out) both;
+}
+
+.anim-spin {
+  animation: spin 0.6s linear infinite;
+}
+
+.anim-bar::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  width: 25%;
+  background: var(--color-sage);
+  animation: bar-slide 1s var(--ease-out) infinite;
+}
+
+/* Nút bị ấn lún xuống 1px, phản hồi vật lý quen thuộc */
+@utility press {
+  transition: background-color var(--t-micro) var(--ease-out),
+    border-color var(--t-micro) var(--ease-out), color var(--t-micro) var(--ease-out),
+    transform var(--t-micro) var(--ease-out);
+}
+
+.press:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/*
+ * Ai bật giảm chuyển động trong hệ điều hành thì tắt hết dịch chuyển, chỉ giữ
+ * lại thay đổi màu. Vòng quay chờ vẫn chạy vì nó mang thông tin, nhưng chậm lại.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .anim-page,
+  .anim-toast {
+    animation: none;
+  }
+
+  .press:active:not(:disabled) {
+    transform: none;
+  }
+
+  .anim-bar::after {
+    animation-duration: 2s;
+  }
+
+  .anim-spin {
+    animation-duration: 1.5s;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
 }

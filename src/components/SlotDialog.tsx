@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { createSlot, deleteFollowing, deleteSlot, toggleDone, updateSlot, type SlotRow } from "@/app/lich/actions";
 import { hhmm } from "@/lib/week";
+import SubmitButton from "./SubmitButton";
 import { useToast } from "./Toast";
 import { IconTrash } from "./icons";
 
@@ -152,13 +153,11 @@ export default function SlotDialog({
         </div>
 
         <div className="mt-6 flex flex-wrap items-center gap-2">
-          <button className="rounded-md bg-sage px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600">
-            {editing ? "Lưu" : "Thêm buổi"}
-          </button>
+          <SubmitButton pendingLabel="Đang lưu…">{editing ? "Lưu" : "Thêm buổi"}</SubmitButton>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md px-4 py-2.5 text-sm font-medium text-ink-soft transition hover:bg-sand"
+            className="press rounded-md px-4 py-2.5 text-sm font-medium text-ink-soft hover:bg-sand"
           >
             Huỷ
           </button>
@@ -175,13 +174,13 @@ export default function SlotDialog({
             }}
           >
             <input type="hidden" name="id" value={slot!.id} />
-            <button
-              className={`rounded-md px-4 py-2 text-sm font-semibold transition ${
-                slot!.done ? "bg-ok-bg text-sage-700" : "bg-white text-ink ring-1 ring-line hover:ring-sage"
-              }`}
+            <SubmitButton
+              variant="ghost"
+              pendingLabel="Đang lưu…"
+              className={`px-4 py-2 ${slot!.done ? "border-sage-200 bg-ok-bg text-sage-700" : ""}`}
             >
               {slot!.done ? "Đã dạy xong" : "Đánh dấu đã dạy"}
-            </button>
+            </SubmitButton>
           </form>
 
           <form
@@ -193,10 +192,10 @@ export default function SlotDialog({
             className="ml-auto"
           >
             <input type="hidden" name="id" value={slot!.id} />
-            <button className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-alert transition hover:bg-alert-bg">
+            <SubmitButton variant="danger" pendingLabel="Đang xoá…" className="px-3 py-2 font-medium">
               <IconTrash />
               Xoá buổi này
-            </button>
+            </SubmitButton>
           </form>
 
           <form
@@ -207,9 +206,9 @@ export default function SlotDialog({
             }}
           >
             <input type="hidden" name="id" value={slot!.id} />
-            <button className="rounded-md px-3 py-2 text-sm font-medium text-alert transition hover:bg-alert-bg">
+            <SubmitButton variant="danger" pendingLabel="Đang xoá…" className="px-3 py-2 font-medium">
               Xoá cả chuỗi từ đây
-            </button>
+            </SubmitButton>
           </form>
         </div>
       )}

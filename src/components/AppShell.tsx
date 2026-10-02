@@ -1,9 +1,20 @@
 "use client";
 
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import { signOut } from "@/lib/auth-client";
+import { Spinner } from "./SubmitButton";
 import { IconCalendar, IconCap, IconLogout, IconSheet, IconShield, IconStudents } from "./icons";
+
+/**
+ * Đổi icon thành vòng quay khi trang đích đang được tải.
+ * useLinkStatus chỉ đọc được trạng thái khi nằm bên trong chính <Link> đó.
+ */
+function RailIcon({ children }: { children: React.ReactNode }) {
+  const { pending } = useLinkStatus();
+  return pending ? <Spinner className="h-5 w-5" /> : <>{children}</>;
+}
 
 function RailLink({
   href,
@@ -22,11 +33,11 @@ function RailLink({
       title={label}
       aria-label={label}
       aria-current={active ? "page" : undefined}
-      className={`grid h-11 w-11 place-items-center rounded-md transition ${
+      className={`press grid h-11 w-11 place-items-center rounded-md ${
         active ? "bg-sage text-white" : "text-ink-soft hover:bg-sage-50 hover:text-sage-700"
       }`}
     >
-      {children}
+      <RailIcon>{children}</RailIcon>
     </Link>
   );
 }
@@ -51,8 +62,10 @@ export default function AppShell({
   const path = usePathname();
   const router = useRouter();
   const admin = user.role === "admin";
+  const [leaving, setLeaving] = useState(false);
 
   async function logout() {
+    setLeaving(true);
     await signOut();
     router.push("/dang-nhap");
     router.refresh();
@@ -105,11 +118,12 @@ export default function AppShell({
         </div>
         <button
           onClick={logout}
+          disabled={leaving}
           title={`Đăng xuất ${user.email}`}
           aria-label="Đăng xuất"
-          className="grid h-10 w-10 place-items-center rounded-sm text-ink-faint transition hover:bg-alert-bg hover:text-alert"
+          className="press grid h-10 w-10 place-items-center rounded-sm text-ink-faint hover:bg-alert-bg hover:text-alert disabled:opacity-60"
         >
-          <IconLogout />
+          {leaving ? <Spinner className="h-5 w-5" /> : <IconLogout />}
         </button>
       </nav>
 
@@ -129,8 +143,13 @@ export default function AppShell({
             <IconShield />
           </Link>
         )}
-        <button onClick={logout} aria-label="Đăng xuất" className="grid h-9 w-9 place-items-center rounded-md text-ink-faint">
-          <IconLogout />
+        <button
+          onClick={logout}
+          disabled={leaving}
+          aria-label="Đăng xuất"
+          className="press grid h-9 w-9 place-items-center rounded-md text-ink-faint"
+        >
+          {leaving ? <Spinner /> : <IconLogout />}
         </button>
       </header>
 
@@ -147,7 +166,10 @@ export default function AppShell({
             </div>
             {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
           </header>
-          {children}
+          {/* key theo đường dẫn để hiệu ứng chạy lại mỗi lần sang trang mới */}
+          <div key={path} className="anim-page">
+            {children}
+          </div>
         </div>
       </div>
     </div>

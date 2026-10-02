@@ -15,7 +15,7 @@ function PhraseChip({ phrase, onAdd }: { phrase: Phrase; onAdd: (line: string) =
     <button
       type="button"
       onClick={() => onAdd(fillPhrase(phrase.text, values))}
-      className={`flex flex-wrap items-center gap-1 rounded-md border px-3 py-2 text-left text-sm transition ${TONE_STYLE[phrase.tone]}`}
+      className={`press flex flex-wrap items-center gap-1 rounded-md border px-3 py-2 text-left text-sm ${TONE_STYLE[phrase.tone]}`}
     >
       {segments.map((seg, i) => (
         <span key={i} className="contents">
@@ -53,7 +53,7 @@ export default function CommentBuilder({ onAdd }: { onAdd: (line: string) => voi
             key={s.id}
             type="button"
             onClick={() => setActive(s.id)}
-            className={`rounded-md px-3.5 py-1.5 text-sm font-medium transition ${
+            className={`press rounded-md px-3.5 py-1.5 text-sm font-medium ${
               s.id === active
                 ? "bg-sage text-white"
                 : "bg-white text-ink-soft ring-1 ring-line hover:text-sage-700"
