@@ -41,6 +41,16 @@ export type SheetStudent = {
 
 const serif = '"Times New Roman", Times, serif';
 
+/**
+ * Thêm https:// nếu người dùng chỉ gõ tên miền, nếu không PDF sẽ coi đó là
+ * đường dẫn tương đối và bấm vào không mở được gì.
+ */
+export function normalizeUrl(raw: string): string {
+  const s = raw.trim();
+  if (!s) return "";
+  return /^https?:\/\//i.test(s) ? s : `https://${s}`;
+}
+
 function Box({
   x1,
   x2,
@@ -48,6 +58,7 @@ function Box({
   height,
   children,
   style,
+  link,
 }: {
   x1: number;
   x2: number;
@@ -55,9 +66,12 @@ function Box({
   height: number;
   children?: React.ReactNode;
   style?: React.CSSProperties;
+  /** Khi xuất PDF, vùng này được phủ một liên kết bấm được. */
+  link?: string;
 }) {
   return (
     <div
+      data-link={link || undefined}
       style={{
         position: "absolute",
         left: x1,
@@ -218,7 +232,12 @@ function Page({ student, lessons, startIndex }: { student: SheetStudent; lessons
       </div>
       <div style={{ ...field, left: 390, top: 162, width: 204 }}>
         Playlist lớp học (Playlist):{" "}
-        <span style={{ ...value, fontSize: 6.5, color: "#1155cc", wordBreak: "break-all" }}>{student.playlist_url}</span>
+        <span
+          data-link={student.playlist_url ? normalizeUrl(student.playlist_url) : undefined}
+          style={{ ...value, fontSize: 6.5, color: "#1155cc", wordBreak: "break-all" }}
+        >
+          {student.playlist_url}
+        </span>
       </div>
 
       <HeaderBand />
@@ -244,7 +263,14 @@ function Page({ student, lessons, startIndex }: { student: SheetStudent; lessons
             >
               {l?.comment}
             </Box>
-            <Box x1={COLS[3]} x2={COLS[4]} top={top} height={height} style={{ ...cell, background: bg, fontSize: 6.5, color: "#1155cc" }}>
+            <Box
+              x1={COLS[3]}
+              x2={COLS[4]}
+              top={top}
+              height={height}
+              link={l?.test_link ? normalizeUrl(l.test_link) : undefined}
+              style={{ ...cell, background: bg, fontSize: 6.5, color: "#1155cc" }}
+            >
               {l?.test_link}
             </Box>
           </div>

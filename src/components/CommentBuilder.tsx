@@ -15,7 +15,7 @@ function PhraseChip({ phrase, onAdd }: { phrase: Phrase; onAdd: (line: string) =
     <button
       type="button"
       onClick={() => onAdd(fillPhrase(phrase.text, values))}
-      className={`flex flex-wrap items-center gap-1 rounded-xl border px-3 py-2 text-left text-sm transition ${TONE_STYLE[phrase.tone]}`}
+      className={`flex flex-wrap items-center gap-1 rounded-md border px-3 py-2 text-left text-sm transition ${TONE_STYLE[phrase.tone]}`}
     >
       {segments.map((seg, i) => (
         <span key={i} className="contents">
@@ -31,7 +31,7 @@ function PhraseChip({ phrase, onAdd }: { phrase: Phrase; onAdd: (line: string) =
                 setValues(next);
               }}
               onClick={(e) => e.stopPropagation()}
-              className="w-12 rounded-lg border border-current/25 bg-white px-1 py-0.5 text-center text-sm font-semibold text-ink outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
+              className="w-12 rounded-md border border-current/25 bg-white px-1 py-0.5 text-center text-sm font-semibold text-ink outline-none focus:border-sage focus:ring-2 focus:ring-sage-100"
             />
           )}
         </span>
@@ -46,14 +46,14 @@ export default function CommentBuilder({ onAdd }: { onAdd: (line: string) => voi
   const skill = SKILLS.find((s) => s.id === active)!;
 
   return (
-    <div className="rounded-2xl border border-line bg-cream p-3.5">
+    <div className="rounded-md border border-line bg-cream p-3.5">
       <div className="mb-3 flex flex-wrap gap-1.5">
         {SKILLS.map((s) => (
           <button
             key={s.id}
             type="button"
             onClick={() => setActive(s.id)}
-            className={`rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
+            className={`rounded-md px-3.5 py-1.5 text-sm font-medium transition ${
               s.id === active
                 ? "bg-sage text-white"
                 : "bg-white text-ink-soft ring-1 ring-line hover:text-sage-700"

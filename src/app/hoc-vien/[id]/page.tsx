@@ -50,7 +50,7 @@ export default async function HocVien({ params }: { params: Promise<{ id: string
       actions={
         <Link
           href={`/phieu/${student.id}`}
-          className="flex items-center gap-1.5 rounded-xl bg-sage px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600"
+          className="flex items-center gap-1.5 rounded-md bg-sage px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600"
         >
           <IconSheet />
           Xem phiếu &amp; gửi

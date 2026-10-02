@@ -11,7 +11,7 @@ export default function NewStudent() {
     <>
       <button
         onClick={() => dialog.current?.showModal()}
-        className="flex items-center gap-1.5 rounded-xl bg-sage px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600"
+        className="flex items-center gap-1.5 rounded-md bg-sage px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600"
       >
         <IconPlus />
         Thêm học viên
@@ -19,7 +19,7 @@ export default function NewStudent() {
 
       <dialog
         ref={dialog}
-        className="m-auto w-[min(32rem,calc(100vw-2rem))] rounded-[24px] border border-line bg-white p-0 backdrop:bg-ink/30 backdrop:backdrop-blur-sm"
+        className="m-auto w-[min(32rem,calc(100vw-2rem))] rounded-lg border border-line bg-white p-0 backdrop:bg-ink/30 backdrop:backdrop-blur-sm"
       >
         <form action={createStudent} className="p-6">
           <h2 className="text-lg font-bold text-ink">Thêm học viên</h2>
@@ -58,11 +58,11 @@ export default function NewStudent() {
             <button
               type="button"
               onClick={() => dialog.current?.close()}
-              className="rounded-xl px-4 py-2.5 text-sm font-medium text-ink-soft transition hover:bg-sand"
+              className="rounded-md px-4 py-2.5 text-sm font-medium text-ink-soft transition hover:bg-sand"
             >
               Huỷ
             </button>
-            <button className="rounded-xl bg-sage px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600">
+            <button className="rounded-md bg-sage px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600">
               Thêm
             </button>
           </div>

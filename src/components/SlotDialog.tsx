@@ -49,7 +49,7 @@ export default function SlotDialog({
     <dialog
       ref={ref}
       onClose={onClose}
-      className="m-auto w-[min(34rem,calc(100vw-2rem))] rounded-3xl border border-line bg-white p-0 backdrop:bg-ink/30 backdrop:backdrop-blur-sm"
+      className="m-auto w-[min(34rem,calc(100vw-2rem))] rounded-lg border border-line bg-white p-0 backdrop:bg-ink/30 backdrop:backdrop-blur-sm"
     >
       <form action={submit} className="p-6">
         {editing && <input type="hidden" name="id" value={slot!.id} />}
@@ -152,13 +152,13 @@ export default function SlotDialog({
         </div>
 
         <div className="mt-6 flex flex-wrap items-center gap-2">
-          <button className="rounded-xl bg-sage px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600">
+          <button className="rounded-md bg-sage px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600">
             {editing ? "Lưu" : "Thêm buổi"}
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl px-4 py-2.5 text-sm font-medium text-ink-soft transition hover:bg-sand"
+            className="rounded-md px-4 py-2.5 text-sm font-medium text-ink-soft transition hover:bg-sand"
           >
             Huỷ
           </button>
@@ -176,7 +176,7 @@ export default function SlotDialog({
           >
             <input type="hidden" name="id" value={slot!.id} />
             <button
-              className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
+              className={`rounded-md px-4 py-2 text-sm font-semibold transition ${
                 slot!.done ? "bg-ok-bg text-sage-700" : "bg-white text-ink ring-1 ring-line hover:ring-sage"
               }`}
             >
@@ -193,7 +193,7 @@ export default function SlotDialog({
             className="ml-auto"
           >
             <input type="hidden" name="id" value={slot!.id} />
-            <button className="flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium text-alert transition hover:bg-alert-bg">
+            <button className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-alert transition hover:bg-alert-bg">
               <IconTrash />
               Xoá buổi này
             </button>
@@ -207,7 +207,7 @@ export default function SlotDialog({
             }}
           >
             <input type="hidden" name="id" value={slot!.id} />
-            <button className="rounded-xl px-3 py-2 text-sm font-medium text-alert transition hover:bg-alert-bg">
+            <button className="rounded-md px-3 py-2 text-sm font-medium text-alert transition hover:bg-alert-bg">
               Xoá cả chuỗi từ đây
             </button>
           </form>

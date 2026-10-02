@@ -41,7 +41,7 @@ export default function AuthCard({
       style={{ backgroundImage: "url('/img/login-bg.webp')" }}
     >
       <div
-        className={`grid w-full ${CARD_WIDTH} overflow-hidden rounded-[28px] border border-line bg-white shadow-[0_30px_70px_-35px_rgba(47,51,39,0.45)] md:grid-cols-2`}
+        className={`grid w-full ${CARD_WIDTH} overflow-hidden rounded-lg border border-line bg-white md:grid-cols-2`}
       >
         {/* Nửa trái tràn viền. Thay ảnh tại public/img/login.webp, nên dùng ảnh dọc 9:16. */}
         <section className={`relative hidden ${PANEL_HEIGHT} bg-sage-100 md:block`}>
@@ -60,7 +60,7 @@ export default function AuthCard({
 
         <section className="flex flex-col justify-center p-8 sm:p-12">
           <div className="mb-8 flex items-center gap-2.5">
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-sage text-white">
+            <span className="grid h-10 w-10 place-items-center rounded-md bg-sage text-white">
               <IconCap />
             </span>
             <span className="text-lg font-bold tracking-tight text-ink">

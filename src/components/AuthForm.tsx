@@ -124,14 +124,14 @@ export default function AuthForm({
         </div>
 
         {error && (
-          <p role="alert" className="rounded-xl bg-alert-bg px-3 py-2 text-sm text-alert">
+          <p role="alert" className="rounded-md bg-alert-bg px-3 py-2 text-sm text-alert">
             {error}
           </p>
         )}
 
         <button
           disabled={busy}
-          className="w-full rounded-xl bg-sage px-4 py-3 font-semibold text-white transition hover:bg-sage-600 disabled:opacity-60"
+          className="w-full rounded-md bg-sage px-4 py-3 font-semibold text-white transition hover:bg-sage-600 disabled:opacity-60"
         >
           {busy ? "Đang xử lý…" : mode === "signup" ? "Tạo tài khoản" : "Đăng nhập"}
         </button>
@@ -148,7 +148,7 @@ export default function AuthForm({
             type="button"
             onClick={withGoogle}
             disabled={busy}
-            className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-line bg-white px-4 py-3 font-semibold text-ink transition hover:border-sage-300 hover:bg-sage-50 disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2.5 rounded-md border border-line bg-white px-4 py-3 font-semibold text-ink transition hover:border-sage-300 hover:bg-sage-50 disabled:opacity-60"
           >
             <IconGoogle />
             Tiếp tục với Google

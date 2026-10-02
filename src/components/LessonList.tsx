@@ -27,7 +27,7 @@ export default function LessonList({ studentId, lessons }: { studentId: string; 
           </li>
         ) : (
           <li key={l.id} className="card flex items-start gap-3.5 p-4">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-sage-100 text-sm font-bold text-sage-700">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-sage-100 text-sm font-bold text-sage-700">
               {l.day_label}
             </span>
 
@@ -54,7 +54,7 @@ export default function LessonList({ studentId, lessons }: { studentId: string; 
                 type="button"
                 onClick={() => setEditing(l.id!)}
                 aria-label="Sửa buổi học"
-                className="grid h-8 w-8 place-items-center rounded-lg text-ink-faint transition hover:bg-sand hover:text-ink"
+                className="grid h-8 w-8 place-items-center rounded-md text-ink-faint transition hover:bg-sand hover:text-ink"
               >
                 <IconEdit />
               </button>
@@ -68,7 +68,7 @@ export default function LessonList({ studentId, lessons }: { studentId: string; 
                 <input type="hidden" name="student_id" value={studentId} />
                 <button
                   aria-label="Xoá buổi học"
-                  className="grid h-8 w-8 place-items-center rounded-lg text-ink-faint transition hover:bg-alert-bg hover:text-alert"
+                  className="grid h-8 w-8 place-items-center rounded-md text-ink-faint transition hover:bg-alert-bg hover:text-alert"
                 >
                   <IconTrash />
                 </button>

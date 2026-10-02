@@ -25,7 +25,7 @@ function Block({ slot, onOpen }: { slot: SlotRow; onOpen: () => void }) {
         onOpen();
       }}
       style={{ top, height }}
-      className={`absolute inset-x-1 z-10 overflow-hidden rounded-lg border px-2 py-1 text-left transition hover:z-20 hover:shadow-md ${
+      className={`absolute inset-x-1 z-10 overflow-hidden rounded-sm border px-2 py-1 text-left transition hover:z-20 ${
         slot.done
           ? "border-line bg-mist text-ink-faint line-through"
           : "border-sage-300 bg-sage-50 text-sage-900 hover:border-sage"
@@ -129,7 +129,7 @@ export default function Calendar({
                 <button
                   type="button"
                   onClick={() => setDraft({ mode: "create", on_date: iso, start_min: 8 * 60 })}
-                  className="rounded-lg bg-sage-50 px-2.5 py-1 text-xs font-semibold text-sage-700"
+                  className="rounded-md bg-sage-50 px-2.5 py-1 text-xs font-semibold text-sage-700"
                 >
                   + Thêm
                 </button>
@@ -143,7 +143,7 @@ export default function Calendar({
                       <button
                         type="button"
                         onClick={() => setDraft({ mode: "edit", slot: s })}
-                        className={`flex w-full items-center gap-3 rounded-xl border px-3 py-2 text-left ${
+                        className={`flex w-full items-center gap-3 rounded-md border px-3 py-2 text-left ${
                           s.done ? "border-line bg-mist text-ink-faint" : "border-sage-200 bg-sage-50"
                         }`}
                       >
@@ -158,7 +158,7 @@ export default function Calendar({
                           <Link
                             href={`/hoc-vien/${s.student_id}`}
                             onClick={(e) => e.stopPropagation()}
-                            className="shrink-0 rounded-lg bg-white px-2 py-1 text-[11px] font-semibold text-sage-700 ring-1 ring-line"
+                            className="shrink-0 rounded-md bg-white px-2 py-1 text-[11px] font-semibold text-sage-700 ring-1 ring-line"
                           >
                             Nhận xét
                           </Link>

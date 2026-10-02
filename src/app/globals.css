@@ -35,8 +35,10 @@
 
   --font-sans: ui-sans-serif, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
-  --radius-card: 20px;
-  --radius-field: 12px;
+  /* Phong cách enterprise: góc bo nhẹ, thẻ là khối chứa chính nên bo lớn hơn
+     các điều khiển nằm bên trong một chút. */
+  --radius-card: 8px;
+  --radius-field: 6px;
 }
 
 body {
@@ -70,6 +72,7 @@ body {
   }
 }
 
+/* Thẻ phẳng, không đổ bóng: ranh giới do đường viền 1px đảm nhiệm. */
 @utility card {
   background: #fff;
   border-radius: var(--radius-card);

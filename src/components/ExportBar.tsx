@@ -1,28 +1,51 @@
 "use client";
 
 import { useState } from "react";
-import { toPng } from "html-to-image";
+import { toJpeg, toPng } from "html-to-image";
 import { PAGE } from "@/lib/layout";
 import { useToast } from "./Toast";
 import { IconCopy, IconImage, IconPdf, IconShare } from "./icons";
 
 const SCALE = 3; // 216 dpi - nét khi phụ huynh phóng to trên điện thoại
 
-async function renderPages(): Promise<string[]> {
-  const els = Array.from(document.querySelectorAll<HTMLElement>(".phieu-page"));
+function sheetPages(): HTMLElement[] {
+  return Array.from(document.querySelectorAll<HTMLElement>(".phieu-page"));
+}
+
+async function renderPages(format: "png" | "jpeg" = "png"): Promise<string[]> {
+  const opts = {
+    pixelRatio: SCALE,
+    width: PAGE.w,
+    height: PAGE.h,
+    backgroundColor: "#ffffff",
+    cacheBust: true,
+    // Chỉ dùng cho jpeg: phiếu là nền trắng và chữ đen nên 0.92 đủ sắc,
+    // mà file nhẹ hơn PNG rất nhiều khi nhúng vào PDF.
+    quality: 0.92,
+  };
   const out: string[] = [];
-  for (const el of els) {
-    out.push(
-      await toPng(el, {
-        pixelRatio: SCALE,
-        width: PAGE.w,
-        height: PAGE.h,
-        backgroundColor: "#ffffff",
-        cacheBust: true,
-      })
-    );
+  for (const el of sheetPages()) {
+    out.push(format === "jpeg" ? await toJpeg(el, opts) : await toPng(el, opts));
   }
   return out;
+}
+
+/**
+ * Vùng chứa link trên một trang phiếu, toạ độ tính theo point để dùng thẳng
+ * cho PDF. Phiếu được dựng ở tỉ lệ 1px = 1pt nên không phải quy đổi.
+ */
+function linkAreas(page: HTMLElement) {
+  const base = page.getBoundingClientRect();
+  return Array.from(page.querySelectorAll<HTMLElement>("[data-link]")).map((el) => {
+    const r = el.getBoundingClientRect();
+    return {
+      url: el.dataset.link!,
+      x: r.left - base.left,
+      y: r.top - base.top,
+      w: r.width,
+      h: r.height,
+    };
+  });
 }
 
 function dataUrlToBlob(dataUrl: string): Blob {
@@ -114,15 +137,28 @@ export default function ExportBar({
 
   const savePdf = () =>
     run("pdf", async () => {
-      const imgs = await renderPages();
+      // JPEG thay vì PNG: PNG nhúng vào PDF bị lưu gần như thô, một phiếu đã
+      // hơn 12MB, quá nặng để gửi qua Zalo. JPEG 0.92 nhẹ hơn vài chục lần mà
+      // mắt thường không phân biệt được trên nền trắng chữ đen.
+      const imgs = await renderPages("jpeg");
+      const pages = sheetPages();
       const { jsPDF } = await import("jspdf");
       const doc = new jsPDF({ unit: "pt", format: [PAGE.w, PAGE.h], orientation: "portrait" });
+
+      let links = 0;
       imgs.forEach((src, i) => {
         if (i > 0) doc.addPage([PAGE.w, PAGE.h], "portrait");
-        doc.addImage(src, "PNG", 0, 0, PAGE.w, PAGE.h);
+        doc.addImage(src, "JPEG", 0, 0, PAGE.w, PAGE.h, undefined, "FAST");
+        // Phiếu được nhúng dạng ảnh nên chữ trên đó không bấm được. Phủ thêm
+        // vùng liên kết thật đúng vị trí để phụ huynh mở được playlist và test.
+        for (const a of linkAreas(pages[i])) {
+          doc.link(a.x, a.y, a.w, a.h, { url: a.url });
+          links += 1;
+        }
       });
+
       doc.save(`${fileBase}.pdf`);
-      toast.ok("Đã tải phiếu PDF");
+      toast.ok(links > 0 ? `Đã tải PDF, có ${links} link bấm được` : "Đã tải phiếu PDF");
     });
 
   const share = () =>
@@ -140,9 +176,9 @@ export default function ExportBar({
     });
 
   const ghost =
-    "flex items-center gap-1.5 rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition hover:border-sage-300 disabled:opacity-50";
+    "flex items-center gap-1.5 rounded-md border border-line bg-white px-4 py-2.5 text-sm font-medium text-ink transition hover:border-sage-300 disabled:opacity-50";
   const primary =
-    "flex items-center gap-1.5 rounded-xl bg-sage px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600 disabled:opacity-50";
+    "flex items-center gap-1.5 rounded-md bg-sage px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600 disabled:opacity-50";
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -152,21 +188,30 @@ export default function ExportBar({
         {busy === "share" ? "Đang tạo ảnh…" : "Gửi qua Zalo"}
       </button>
       <button
-        onClick={copyImage}
+        onClick={savePdf}
         disabled={!!busy}
-        title="Chép ảnh phiếu, sang Zalo bấm Ctrl+V"
+        title="PDF giữ được link bấm được, kéo thẳng file vào khung chat Zalo"
         className={`desktop-only ${primary}`}
       >
+        <IconPdf />
+        {busy === "pdf" ? "Đang tạo…" : "Tải PDF để gửi"}
+      </button>
+      <button onClick={savePdf} disabled={!!busy} className={`touch-only ${ghost}`}>
+        <IconPdf />
+        {busy === "pdf" ? "Đang tạo…" : "Tải PDF"}
+      </button>
+      <button
+        onClick={copyImage}
+        disabled={!!busy}
+        title="Chép ảnh phiếu, sang Zalo bấm Ctrl+V. Ảnh hiện ngay trong chat nhưng link không bấm được."
+        className={`desktop-only ${ghost}`}
+      >
         <IconCopy />
-        {busy === "copyimg" ? "Đang tạo ảnh…" : "Chép ảnh để dán Zalo"}
+        {busy === "copyimg" ? "Đang tạo ảnh…" : "Chép ảnh"}
       </button>
       <button onClick={savePng} disabled={!!busy} className={ghost}>
         <IconImage />
         {busy === "png" ? "Đang tạo…" : "Tải ảnh"}
-      </button>
-      <button onClick={savePdf} disabled={!!busy} className={ghost}>
-        <IconPdf />
-        {busy === "pdf" ? "Đang tạo…" : "Tải PDF"}
       </button>
       {hasLinks && (
         <button onClick={copyLinks} disabled={!!busy} className={ghost} title="Dán vào Zalo nếu link không bấm được">

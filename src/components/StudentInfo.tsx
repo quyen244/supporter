@@ -62,7 +62,7 @@ export default function StudentInfo({ student }: { student: Student }) {
               <input id="sp" name="playlist_url" defaultValue={student.playlist_url} className="field" />
             </div>
             <div className="sm:col-span-2">
-              <button className="rounded-xl bg-sage px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600">
+              <button className="rounded-md bg-sage px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sage-600">
                 Lưu thay đổi
               </button>
             </div>

@@ -17,7 +17,7 @@ export default async function Lich({ searchParams }: { searchParams: Promise<{ t
   const [slots, students] = await Promise.all([listWeek(monday), listMyStudents()]);
 
   const taught = slots.filter((s) => s.done).length;
-  const nav = "grid h-9 w-9 place-items-center rounded-xl border border-line bg-white text-ink-soft transition hover:border-sage-300 hover:text-sage";
+  const nav = "grid h-9 w-9 place-items-center rounded-md border border-line bg-white text-ink-soft transition hover:border-sage-300 hover:text-sage";
 
   return (
     <AppShell
@@ -31,7 +31,7 @@ export default async function Lich({ searchParams }: { searchParams: Promise<{ t
           </Link>
           <Link
             href="/lich"
-            className="rounded-xl border border-line bg-white px-3 py-2 text-sm font-medium text-ink transition hover:border-sage-300"
+            className="rounded-md border border-line bg-white px-3 py-2 text-sm font-medium text-ink transition hover:border-sage-300"
           >
             Tuần này
           </Link>

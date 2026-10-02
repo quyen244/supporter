@@ -54,12 +54,13 @@ export default async function Phieu({ params }: { params: Promise<{ id: string }
         <p className="mb-2 font-semibold text-ink">Cách gửi cho phụ huynh</p>
         <ol className="desktop-only list-decimal space-y-1 pl-5 text-ink-soft">
           <li>
-            Bấm <span className="font-medium text-ink">Chép ảnh để dán Zalo</span>, mở Zalo rồi bấm Ctrl+V vào
-            khung chat.
+            Bấm <span className="font-medium text-ink">Tải PDF để gửi</span>, rồi kéo file vào khung chat Zalo.
+            Link playlist và kết quả test trong PDF bấm được ngay.
           </li>
           <li>
-            Bấm <span className="font-medium text-ink">Sao chép link</span>, dán thêm một lần nữa để phụ huynh
-            bấm được playlist và kết quả test.
+            Muốn phụ huynh thấy phiếu luôn trong chat không cần mở file, dùng{" "}
+            <span className="font-medium text-ink">Chép ảnh</span> rồi Ctrl+V. Đổi lại link trên ảnh không bấm
+            được, nên dán thêm <span className="font-medium text-ink">Sao chép link</span>.
           </li>
         </ol>
         <p className="touch-only text-ink-soft">

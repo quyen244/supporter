@@ -26,7 +26,7 @@ export default async function Home() {
     >
       {students.length === 0 ? (
         <div className="card grid place-items-center px-6 py-16 text-center">
-          <span className="mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-sage-50 text-sage">
+          <span className="mb-4 grid h-14 w-14 place-items-center rounded-md bg-sage-50 text-sage">
             <IconSheet className="scale-125" />
           </span>
           <p className="font-semibold text-ink">Chưa có học viên nào</p>
@@ -40,9 +40,9 @@ export default async function Home() {
             <li key={s.id}>
               <Link
                 href={`/hoc-vien/${s.id}`}
-                className="card group flex items-center gap-4 p-4 transition hover:border-sage-300 hover:shadow-[0_12px_30px_-20px_rgba(47,51,39,0.5)]"
+                className="card group flex items-center gap-4 p-4 transition hover:border-sage-300"
               >
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-sage-100 text-lg font-bold text-sage-700">
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-sage-100 text-lg font-bold text-sage-700">
                   {initials(s.name)}
                 </span>
                 <span className="min-w-0 flex-1">
