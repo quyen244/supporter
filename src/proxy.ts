@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { COOKIE, expectedToken, safeEqual } from "@/lib/auth";
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const want = await expectedToken();
   // Chưa đặt APP_PASSWORD thì mở khoá, để chạy thử cục bộ không vướng.
   if (!want) return NextResponse.next();
@@ -16,5 +16,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!dang-nhap|api/dang-nhap|phieu/|_next/|favicon.ico).*)"],
+  matcher: ["/((?!dang-nhap|api/dang-nhap|img/|_next/|favicon.ico).*)"],
 };

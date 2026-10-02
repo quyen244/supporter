@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Phiếu học tập
 
-## Getting Started
+Nhập nhận xét sau mỗi buổi dạy rồi xuất ra phiếu giống hệt bản PDF của trung tâm, thay cho việc điền tay.
 
-First, run the development server:
+## Chức năng
+
+- Quản lý nhiều học viên, mỗi học viên một phiếu tích luỹ dần qua các buổi.
+- Thư viện mẫu câu cho 6 nhóm: Từ vựng, Nghe, Nói, Đọc, Viết, Thái độ.
+  Mỗi câu có ô nhập số ngay trên câu, ví dụ "Đọc hiểu được khoảng __% bài đọc".
+  Bấm vào câu là nó được thêm vào ô nhận xét, sau đó vẫn sửa tay được.
+- Phiếu tự động chia trang 18 dòng, dòng nào nhận xét dài thì tự cao lên.
+- Xuất PNG (216 dpi) hoặc PDF, và nút chia sẻ thẳng sang Zalo trên điện thoại.
+- Toàn bộ ứng dụng khoá sau một mật khẩu.
+
+## Về việc gửi Zalo
+
+Zalo không cho phép một web app cá nhân gửi tin nhắn thẳng tới phụ huynh.
+Muốn gửi tự động thì phải có Zalo Official Account đã xác thực doanh nghiệp, template được Zalo duyệt trước, và trả phí theo từng tin.
+
+Vì vậy ứng dụng dùng cách thực tế hơn: nút **Gửi qua Zalo** tạo ảnh phiếu rồi mở bảng chia sẻ của hệ điều hành.
+Trên điện thoại, chọn Zalo rồi chọn phụ huynh là xong.
+Ảnh hiển thị trực tiếp trong khung chat nên phụ huynh xem được ngay, không phải tải file như PDF.
+
+Trên máy tính, nếu trình duyệt không hỗ trợ chia sẻ file thì ứng dụng báo lại và bạn dùng nút **Tải ảnh PNG**.
+
+## Chạy trên máy
+
+Cần Node 20 trở lên và một database PostgreSQL.
 
 ```bash
+npm install
+cp .env.example .env.local   # rồi điền DATABASE_URL và APP_PASSWORD
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Bảng dữ liệu được tạo tự động ở lần chạy đầu, không cần chạy migration thủ công.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Biến môi trường
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Biến | Bắt buộc | Ý nghĩa |
+|---|---|---|
+| `DATABASE_URL` | có | Chuỗi kết nối PostgreSQL. |
+| `APP_PASSWORD` | nên có | Mật khẩu vào ứng dụng. Để trống thì ứng dụng mở tự do, chỉ dùng khi chạy thử trên máy. |
 
-## Learn More
+## Đưa lên mạng (Vercel)
 
-To learn more about Next.js, take a look at the following resources:
+1. Đẩy repo này lên GitHub.
+2. Vào Vercel, chọn Import Project và trỏ tới repo.
+3. Trong tab Storage của project, thêm một database Postgres (Neon có gói miễn phí).
+   Vercel tự gắn `DATABASE_URL` vào project.
+4. Trong Settings > Environment Variables, thêm `APP_PASSWORD`.
+5. Deploy.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Sau đó mở trang web trên điện thoại và thêm vào màn hình chính để dùng như một app.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Phiếu được dựng như thế nào
 
-## Deploy on Vercel
+Toạ độ trong `src/lib/layout.ts` không phải ước lượng.
+Chúng được đo trực tiếp từ file PDF gốc bằng cách render ở 72 dpi rồi dò pixel: vị trí từng đường kẻ, màu nền, biên các cột và biên 18 dòng.
+Kết quả là lưới bảng trùng khít từng pixel với bản gốc.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Ba ảnh trong `public/img` (logo, ngôi sao, hình mờ) cũng được trích thẳng từ PDF gốc, kèm kênh trong suốt.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Nếu trung tâm đổi mẫu phiếu, hãy đo lại rồi cập nhật `layout.ts` thay vì chỉnh số bằng cảm tính.
+
+## Thư viện mẫu câu
+
+Sửa trong `src/lib/phrases.ts`.
+Mỗi câu có `tone` quyết định màu chip trên giao diện: `good` xanh lá, `ok` vàng, `work` đỏ.
+Ký hiệu `{n}` trong câu sẽ thành một ô nhập số, `defaults` là giá trị gợi ý cho từng ô theo thứ tự.
