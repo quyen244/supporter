@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AuthCard from "@/components/AuthCard";
 import AuthForm from "@/components/AuthForm";
+import { googleEnabled } from "@/lib/auth";
 
 export default function DangKy() {
   return (
@@ -16,7 +17,7 @@ export default function DangKy() {
         </>
       }
     >
-      <AuthForm mode="signup" next="/" />
+      <AuthForm mode="signup" next="/" google={googleEnabled} />
     </AuthCard>
   );
 }

@@ -83,6 +83,61 @@ Ba ảnh trong `public/img` (logo, ngôi sao, hình mờ) cũng được trích 
 
 Nếu trung tâm đổi mẫu phiếu, hãy đo lại rồi cập nhật `layout.ts` thay vì chỉnh số bằng cảm tính.
 
+## Đăng nhập bằng Google
+
+Để trống `GOOGLE_CLIENT_ID` và `GOOGLE_CLIENT_SECRET` thì nút Google tự ẩn, app vẫn chạy bằng email và mật khẩu.
+Điền đủ hai biến là nút hiện ra, không phải sửa code.
+
+### Các bước trong Google Cloud Console
+
+1. Mở [console.cloud.google.com](https://console.cloud.google.com), tạo project mới hoặc chọn project có sẵn.
+
+2. Vào **APIs & Services > OAuth consent screen**.
+   Chọn **External**, rồi điền tên ứng dụng (Teachly), email hỗ trợ và email liên hệ của nhà phát triển.
+
+3. Ở phần **Scopes**, thêm ba scope cơ bản: `openid`, `.../auth/userinfo.email`, `.../auth/userinfo.profile`.
+   Không cần scope nào khác, app chỉ lấy email và tên.
+
+4. Nếu app đang ở chế độ **Testing**, thêm email của từng giáo viên vào mục **Test users**.
+   Chế độ này giới hạn 100 người và ai không có trong danh sách sẽ bị chặn.
+   Khi nào dùng thật thì bấm **Publish app** để chuyển sang Production.
+
+5. Vào **APIs & Services > Credentials > Create Credentials > OAuth client ID**, chọn **Web application**.
+
+6. Điền hai mục sau, đây là chỗ hay sai nhất:
+
+   **Authorized JavaScript origins**
+
+   ```
+   http://localhost:3000
+   https://ten-mien-that-cua-ban
+   ```
+
+   **Authorized redirect URIs**
+
+   ```
+   http://localhost:3000/api/auth/callback/google
+   https://ten-mien-that-cua-ban/api/auth/callback/google
+   ```
+
+   Đường dẫn `/api/auth/callback/google` là do Better Auth quy định, đừng đổi.
+   Sai một ký tự là Google trả lỗi `redirect_uri_mismatch`.
+
+7. Bấm **Create**, copy **Client ID** và **Client secret** vào `.env.local`:
+
+   ```
+   GOOGLE_CLIENT_ID=...apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=...
+   ```
+
+8. Khởi động lại server. Biến môi trường chỉ được đọc lúc khởi động.
+
+### Gộp tài khoản
+
+Người đã đăng ký bằng mật khẩu, sau đó bấm đăng nhập Google cùng email, sẽ được gộp vào một tài khoản thay vì tạo tài khoản thứ hai.
+Chỉ Google được tin cậy để gộp, vì Google đã xác minh email hộ.
+Quyền quản trị vẫn dựa trên `ADMIN_EMAILS` nên đăng nhập kiểu nào cũng ra đúng vai trò.
+
 ## Lịch dạy
 
 Giờ được lưu theo đồng hồ treo tường: cột `on_date` kiểu `date` và `start_min` là số phút tính từ 0h.

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AuthCard from "@/components/AuthCard";
 import AuthForm from "@/components/AuthForm";
+import { googleEnabled } from "@/lib/auth";
 
 export default async function DangNhap({ searchParams }: { searchParams: Promise<{ tiep?: string }> }) {
   const { tiep } = await searchParams;
@@ -19,7 +20,7 @@ export default async function DangNhap({ searchParams }: { searchParams: Promise
         </>
       }
     >
-      <AuthForm mode="signin" next={next} />
+      <AuthForm mode="signin" next={next} google={googleEnabled} />
     </AuthCard>
   );
 }
